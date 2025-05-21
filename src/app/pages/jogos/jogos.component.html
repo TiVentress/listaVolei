@@ -1,50 +1,45 @@
-<h2>Jogos Agendados</h2>
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Jogos Agendados</h2>
+    <div>
+      <button class="btn btn-success me-2" (click)="novo()">Novo Jogo</button>
+      <button class="btn btn-outline-secondary" (click)="logout()">Logout</button>
+    </div>
+  </div>
 
-<button (click)="novo()">Novo Jogo</button>
-<button (click)="logout()">Logout</button>
+  <div *ngFor="let jogo of jogos" class="card mb-4 shadow-sm w-50 mx-auto">
+    <div class="card-body">
+      <h5 class="card-title mb-3 text-center">
+        <strong>{{ jogo.local }} — {{ jogo.data | date:'dd-MM-yyyy'}} às {{ jogo.hora }}</strong>
+      </h5>
 
-<div *ngFor="let jogo of jogos" style="margin-bottom: 32px; border: 1px solid #ccc; padding: 16px; border-radius: 8px;">
-  <table border="1" cellpadding="8" cellspacing="0" style="width: 100%;">
-    <thead>
-      <tr>
-        <th>Data</th>
-        <th>Hora</th>
-        <th>Local</th>
-        <th>Ações</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>{{ jogo.data | date:'dd-MM-yyyy'}}</td>
-        <td>{{ jogo.hora }}</td>
-        <td>{{ jogo.local }}</td>
-        <td>
-          <button (click)="editar(jogo.id)">Editar</button>
-          <button (click)="remover(jogo.id)">Remover</button>
-          <button [routerLink]="['/jogos', jogo.id, 'participantes']">Participantes</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+      <div class="mb-3 text-center">
+        <button class="btn btn-primary btn-sm me-2" (click)="editar(jogo.id)">Editar</button>
+        <button class="btn btn-danger btn-sm me-2" (click)="remover(jogo.id)">Remover</button>
+        <button class="btn btn-info btn-sm" [routerLink]="['/jogos', jogo.id, 'participantes']">
+          Participantes
+        </button>
+      </div>
 
-  <h4 style="margin-top: 16px;">Participantes:</h4>
-  <table *ngIf="jogo.participantes?.length; else semParticipantes" border="1" cellpadding="6" cellspacing="0" style="width: 100%; margin-top: 8px;">
-    <thead>
-      <tr>
-        <th>Nome</th>
-        <th>Status</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let p of jogo.participantes">
-        <td>{{ p.nome }}</td>
-        <td>{{ p.confirmado ? 'Confirmado' : 'Não Confirmado' }}</td>
-      </tr>
-    </tbody>
-  </table>
+      <div *ngIf="jogo.participantes" class="text-center">
+        <strong>Participantes:</strong>
 
-  <ng-template #semParticipantes>
-    <p style="margin-top: 8px; font-style: italic;">Nenhum participante ainda.</p>
-  </ng-template>
+        <ng-container *ngIf="jogo.participantes.length > 0; else semParticipantes">
+          <ul class="list-group mt-3">
+            <li class="list-group-item d-flex justify-content-center align-items-center gap-2"
+              *ngFor="let p of jogo.participantes">
+              <span class="fw-semibold">{{ p.nome }}</span>
+              <span class="badge bg-{{ p.confirmado ? 'success' : 'secondary' }}">
+                {{ p.confirmado ? 'Confirmado' : 'Não Confirmado' }}
+              </span>
+            </li>
+          </ul>
+        </ng-container>
+
+        <ng-template #semParticipantes>
+          <div class="alert alert-light mt-2 text-muted">Nenhum participante cadastrado.</div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
 </div>
-
