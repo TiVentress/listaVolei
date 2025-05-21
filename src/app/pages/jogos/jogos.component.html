@@ -1,26 +1,50 @@
 <h2>Jogos Agendados</h2>
+
 <button (click)="novo()">Novo Jogo</button>
 <button (click)="logout()">Logout</button>
 
-<table border="1" cellpadding="8" cellspacing="0" style="margin-top: 20px;">
-  <thead>
-    <tr>
-      <th>Data</th>
-      <th>Hora</th>
-      <th>Local</th>
-      <th>Ações</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let jogo of jogos">
-      <td>{{ jogo.data | date:'dd-MM-yyyy'}}</td>
-      <td>{{ jogo.hora }}</td>
-      <td>{{ jogo.local }}</td>
-      <td>
-        <button (click)="editar(jogo.id)">Editar</button>
-        <button (click)="remover(jogo.id)">Remover</button>
-        <button [routerLink]="['/jogos', jogo.id, 'participantes']">Participantes</button>
-      </td>
-    </tr>
-  </tbody>
-</table>
+<div *ngFor="let jogo of jogos" style="margin-bottom: 32px; border: 1px solid #ccc; padding: 16px; border-radius: 8px;">
+  <table border="1" cellpadding="8" cellspacing="0" style="width: 100%;">
+    <thead>
+      <tr>
+        <th>Data</th>
+        <th>Hora</th>
+        <th>Local</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{ jogo.data | date:'dd-MM-yyyy'}}</td>
+        <td>{{ jogo.hora }}</td>
+        <td>{{ jogo.local }}</td>
+        <td>
+          <button (click)="editar(jogo.id)">Editar</button>
+          <button (click)="remover(jogo.id)">Remover</button>
+          <button [routerLink]="['/jogos', jogo.id, 'participantes']">Participantes</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h4 style="margin-top: 16px;">Participantes:</h4>
+  <table *ngIf="jogo.participantes?.length; else semParticipantes" border="1" cellpadding="6" cellspacing="0" style="width: 100%; margin-top: 8px;">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let p of jogo.participantes">
+        <td>{{ p.nome }}</td>
+        <td>{{ p.confirmado ? 'Confirmado' : 'Não Confirmado' }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <ng-template #semParticipantes>
+    <p style="margin-top: 8px; font-style: italic;">Nenhum participante ainda.</p>
+  </ng-template>
+</div>
+

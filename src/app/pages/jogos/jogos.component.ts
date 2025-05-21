@@ -5,6 +5,9 @@ import { RouterModule } from '@angular/router';
 import { JogoService } from '../../services/jogo.service';
 import { Jogo } from '../../models/jogo.model';
 import { AuthService } from '../../services/auth.service';
+import { ParticipanteService } from '../../services/participante.service';
+import { Participante } from '../../models/participante.model';
+
 
 @Component({
   selector: 'app-jogos',
@@ -15,8 +18,21 @@ import { AuthService } from '../../services/auth.service';
 export class JogosComponent {
   jogos: Jogo[] = [];
 
-  constructor(private jogoService: JogoService, private router: Router, private authService: AuthService) {
+  constructor(
+    private jogoService: JogoService,
+    private participanteService: ParticipanteService, // <- Adicionado
+    private router: Router,
+    private authService: AuthService
+  ) {
+    this.carregar();
+  }
+
+  carregar() {
     this.jogos = this.jogoService.listar();
+
+    this.jogos.forEach(jogo => {
+      jogo.participantes = this.participanteService.listarPorJogo(jogo.id);
+    });
   }
 
   novo() {
@@ -30,12 +46,13 @@ export class JogosComponent {
   remover(id: number) {
     if (confirm('Deseja remover este jogo?')) {
       this.jogoService.remover(id);
-      this.jogos = this.jogoService.listar(); // Atualiza a lista
+      this.carregar(); // <- Atualiza a lista com participantes
     }
   }
 
   logout() {
-  this.authService.logout();
-  this.router.navigate(['/login']);
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 }
+
