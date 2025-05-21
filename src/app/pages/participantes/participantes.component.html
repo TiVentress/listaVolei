@@ -1,0 +1,24 @@
+<h2>Participantes</h2>
+
+<input [(ngModel)]="nome" placeholder="Nome do participante" />
+<button (click)="adicionar()">Adicionar</button>
+
+<!-- Campo de busca -->
+<input
+  [(ngModel)]="filtroNome"
+  placeholder="Buscar por nome"
+  class="filtro-input"
+/>
+
+<ul>
+  <li *ngFor="let p of participantesFiltrados">
+    {{ p.nome }} —
+    <strong>{{ p.confirmado ? 'Confirmado' : 'Não Confirmado' }}</strong>
+    <button (click)="alternarConfirmacao(p)">
+      {{ p.confirmado ? 'Desconfirmar' : 'Confirmar' }}
+    </button>
+    <button (click)="remover(p.id)">Remover</button>
+  </li>
+</ul>
+
+

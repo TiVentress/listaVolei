@@ -1,0 +1,26 @@
+<h2>Jogos Agendados</h2>
+<button (click)="novo()">Novo Jogo</button>
+<button (click)="logout()">Logout</button>
+
+<table border="1" cellpadding="8" cellspacing="0" style="margin-top: 20px;">
+  <thead>
+    <tr>
+      <th>Data</th>
+      <th>Hora</th>
+      <th>Local</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let jogo of jogos">
+      <td>{{ jogo.data | date:'dd-MM-yyyy'}}</td>
+      <td>{{ jogo.hora }}</td>
+      <td>{{ jogo.local }}</td>
+      <td>
+        <button (click)="editar(jogo.id)">Editar</button>
+        <button (click)="remover(jogo.id)">Remover</button>
+        <button [routerLink]="['/jogos', jogo.id, 'participantes']">Participantes</button>
+      </td>
+    </tr>
+  </tbody>
+</table>

@@ -1,0 +1,15 @@
+<h2>{{ editando ? 'Editar Jogo' : 'Novo Jogo' }}</h2>
+
+<form (ngSubmit)="salvar()">
+  <label>Data:</label>
+  <input type="date" [(ngModel)]="jogo.data" name="data" required /><br /><br />
+
+  <label>Hora:</label>
+  <input type="time" [(ngModel)]="jogo.hora" name="hora" required /><br /><br />
+
+  <label>Local:</label>
+  <input type="text" [(ngModel)]="jogo.local" name="local" required /><br /><br />
+
+  <button type="submit">Salvar</button>
+  <button type="button" (click)="cancelar()">Cancelar</button>
+</form>
