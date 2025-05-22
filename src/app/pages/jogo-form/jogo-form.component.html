@@ -1,15 +1,23 @@
-<h2>{{ editando ? 'Editar Jogo' : 'Novo Jogo' }}</h2>
+<div class="container mt-4" style="max-width: 350px;">
+  <h2 class="text-center mb-4">{{ jogo.id ? 'Editar Jogo' : 'Novo Jogo' }}</h2>
 
-<form (ngSubmit)="salvar()">
-  <label>Data:</label>
-  <input type="date" [(ngModel)]="jogo.data" name="data" required /><br /><br />
+  <form (ngSubmit)="salvar()" #form="ngForm">
+    <div class="mb-3">
+      <label for="data" class="form-label">Data</label>
+      <input type="date" id="data" name="data" [(ngModel)]="jogo.data" class="form-control" required>
+    </div>
 
-  <label>Hora:</label>
-  <input type="time" [(ngModel)]="jogo.hora" name="hora" required /><br /><br />
+    <div class="mb-3">
+      <label for="hora" class="form-label">Hora</label>
+      <input type="time" id="hora" name="hora" [(ngModel)]="jogo.hora" class="form-control" required>
+    </div>
 
-  <label>Local:</label>
-  <input type="text" [(ngModel)]="jogo.local" name="local" required /><br /><br />
+    <div class="mb-3">
+      <label for="local" class="form-label">Local</label>
+      <input type="text" id="local" name="local" [(ngModel)]="jogo.local" class="form-control" required>
+    </div>
 
-  <button type="submit">Salvar</button>
-  <button type="button" (click)="cancelar()">Cancelar</button>
-</form>
+    <button type="submit" class="btn btn-primary w-100">Salvar</button>
+  </form>
+</div>
+
