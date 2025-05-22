@@ -1,23 +1,53 @@
-<h2>Participantes</h2>
+<div class="container mt-4" style="max-width: 350px;">
+  <h2 class="text-center mb-4">Participantes</h2>
 
-<input [(ngModel)]="nome" placeholder="Nome do participante" />
-<button (click)="adicionar()">Adicionar</button>
+  <div class="input-group mb-3">
+    <input 
+      [(ngModel)]="nome" 
+      placeholder="Nome do participante" 
+      class="form-control form-control-sm"
+    />
+    <button class="btn btn-success btn-sm" (click)="adicionar()">Adicionar</button>
+  </div>
 
-<input
-  [(ngModel)]="filtroNome"
-  placeholder="Buscar por nome"
-  class="filtro-input"
-/>
+  <div class="input-group mb-4">
+    <input 
+      [(ngModel)]="filtroNome" 
+      placeholder="Buscar por nome"
+      class="form-control form-control-sm"
+    />
+  </div>
+</div>
 
-<ul>
-  <li *ngFor="let p of participantesFiltrados">
-    {{ p.nome }} —
-    <strong>{{ p.confirmado ? 'Confirmado' : 'Não Confirmado' }}</strong>
-    <button (click)="alternarConfirmacao(p)">
-      {{ p.confirmado ? 'Desconfirmar' : 'Confirmar' }}
-    </button>
-    <button (click)="remover(p.id)">Remover</button>
-  </li>
-</ul>
+<div class="container" style="max-width: 600px;">
+  <ul class="list-group">
+    <li 
+      *ngFor="let p of participantesFiltrados"
+      class="list-group-item d-flex justify-content-between align-items-center"
+    >
+      <div class="me-2">
+        <span>{{ p.nome }}</span> —
+        <strong class="text-{{ p.confirmado ? 'success' : 'secondary' }}">
+          {{ p.confirmado ? 'Confirmado' : 'Não Confirmado' }}
+        </strong>
+      </div>
+      <div class="text-nowrap">
+        <button 
+          class="btn btn-outline-primary btn-sm me-1"
+          (click)="alternarConfirmacao(p)"
+        >
+          {{ p.confirmado ? 'Desconfirmar' : 'Confirmar' }}
+        </button>
+        <button 
+          class="btn btn-outline-danger btn-sm"
+          (click)="remover(p.id)"
+        >
+          Remover
+        </button>
+      </div>
+    </li>
+  </ul>
+</div>
+
 
 
