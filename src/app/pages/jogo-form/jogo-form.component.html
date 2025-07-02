@@ -1,24 +1,57 @@
 <div class="container mt-4" style="max-width: 350px;">
   <h2 class="text-center mb-4">{{ jogo.id ? 'Editar Jogo' : 'Novo Jogo' }}</h2>
 
-  <form (ngSubmit)="salvar()" #form="ngForm">
+  <form (ngSubmit)="form.valid && salvar()" #form="ngForm" novalidate>
     <div class="mb-3">
       <label for="data" class="form-label">Data</label>
-      <input type="date" id="data" name="data" [(ngModel)]="jogo.data" class="form-control" required>
+      <input
+        type="date"
+        id="data"
+        name="data"
+        [(ngModel)]="jogo.data"
+        class="form-control"
+        [min]="dataAtual"
+        required
+        #data="ngModel"
+        [ngClass]="{'is-invalid': data.invalid && form.submitted}"
+      />
+      <div class="invalid-feedback">A data é obrigatória.</div>
     </div>
 
     <div class="mb-3">
       <label for="hora" class="form-label">Hora</label>
-      <input type="time" id="hora" name="hora" [(ngModel)]="jogo.hora" class="form-control" required>
+      <input
+        type="time"
+        id="hora"
+        name="hora"
+        [(ngModel)]="jogo.hora"
+        class="form-control"
+        required
+        #hora="ngModel"
+        [ngClass]="{'is-invalid': hora.invalid && form.submitted}"
+      />
+      <div class="invalid-feedback">A hora é obrigatória.</div>
     </div>
 
     <div class="mb-3">
       <label for="local" class="form-label">Local</label>
-      <input type="text" id="local" name="local" [(ngModel)]="jogo.local" class="form-control" required>
+      <input
+        type="text"
+        id="local"
+        name="local"
+        [(ngModel)]="jogo.local"
+        class="form-control"
+        required
+        #local="ngModel"
+        [ngClass]="{'is-invalid': local.invalid && form.submitted}"
+      />
+      <div class="invalid-feedback">O local é obrigatório.</div>
     </div>
-    <div class="text-center">
+
+    <div class="text-center d-flex justify-content-between mt-3">
+      <button type="button" class="btn btn-secondary w-50 me-2" (click)="cancelar()">Cancelar</button>
       <button type="submit" class="btn btn-primary w-50">Salvar</button>
     </div>
+
   </form>
 </div>
-

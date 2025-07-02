@@ -18,6 +18,8 @@ export class JogoFormComponent {
     local: '',
   };
 
+  dataAtual: string = new Date().toISOString().split('T')[0];
+
   editando = false;
   idEditando: number | null = null;
 
