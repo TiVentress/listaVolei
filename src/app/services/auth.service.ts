@@ -1,25 +1,29 @@
 import { Injectable } from '@angular/core';
+import { Auth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from '@angular/fire/auth';
+import { Router } from '@angular/router';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class AuthService {
-  private mockUser = { username: 'teste@gmail.com', password: 'admin' };
+  constructor(private auth: Auth, private router: Router) {}
 
-  login(username: string, password: string): boolean {
-    if (username === this.mockUser.username && password === this.mockUser.password) {
-      const fakeToken = 'fake-jwt-token';
-      localStorage.setItem('token', fakeToken);
-      return true;
-    }
-    return false;
+  async login(email: string, password: string): Promise<void> {
+  try {
+    await signInWithEmailAndPassword(this.auth, email, password);
+    this.router.navigate(['/jogos']);
+  } catch (error) {
+    throw new Error('Login inválido');
   }
+}
 
-  logout() {
-    localStorage.removeItem('token');
-  }
+  async logout(): Promise<void> {
+  await signOut(this.auth);
+  this.router.navigate(['/login']);
+}
 
-  isAuthenticated(): boolean {
-    return !!localStorage.getItem('token');
+
+  isAuthenticated(): Promise<boolean> {
+    return new Promise(resolve => {
+      onAuthStateChanged(this.auth, user => resolve(!!user));
+    });
   }
 }

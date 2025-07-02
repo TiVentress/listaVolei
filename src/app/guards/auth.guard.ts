@@ -1,15 +1,11 @@
 import { inject } from '@angular/core';
-import { CanActivateFn, Router } from '@angular/router';
+import { CanActivateFn } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
-export const authGuard: CanActivateFn = () => {
+export const authGuard: CanActivateFn = async () => {
   const authService = inject(AuthService);
-  const router = inject(Router);
-
-  if (authService.isAuthenticated()) {
-    return true;
-  }
-
-  router.navigate(['/login']);
-  return false;
+  const isLoggedIn = await authService.isAuthenticated();
+  return isLoggedIn; // está retornando boolean, que é o correto
 };
+
+

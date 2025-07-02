@@ -11,7 +11,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
 
     // Firebase App Initialization
-    provideFirebaseApp(() => initializeApp(environment.firebase))
+    provideFirebaseApp(() => initializeApp(environment.firebaseConfig))
   ]
 };
 
