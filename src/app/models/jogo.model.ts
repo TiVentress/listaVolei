@@ -1,9 +1,11 @@
 import { Participante } from './participante.model';
 
+// src/app/models/jogo.model.ts
 export interface Jogo {
-  id: number;
-  data: string; // Ex: '20-05-2025'
-  hora: string; // Ex: '19:00'
+  id?: string;
+  data: string;
+  hora: string;
   local: string;
-  participantes?: Participante[];
+  participantes?: Participante[];   // <- adicionado
 }
+

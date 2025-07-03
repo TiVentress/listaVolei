@@ -16,8 +16,8 @@
       </h5>
 
       <div class="mb-3 text-center">
-        <button class="btn btn-primary btn-sm me-2" (click)="editar(jogo.id)">Editar</button>
-        <button class="btn btn-danger btn-sm me-2" (click)="remover(jogo.id)">Remover</button>
+        <button class="btn btn-primary btn-sm me-2" (click)="editar(jogo.id!)">Editar</button>
+        <button class="btn btn-danger btn-sm me-2" (click)="remover(jogo.id!)">Remover</button>
         <button class="btn btn-info btn-sm" [routerLink]="['/jogos', jogo.id, 'participantes']">
           Participantes
         </button>

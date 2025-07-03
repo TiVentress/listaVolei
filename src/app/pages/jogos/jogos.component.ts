@@ -1,13 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { JogoService } from '../../services/jogo.service';
-import { Jogo } from '../../models/jogo.model';
-import { AuthService } from '../../services/auth.service';
 import { ParticipanteService } from '../../services/participante.service';
-import { Participante } from '../../models/participante.model';
-
+import { AuthService } from '../../services/auth.service';
+import { Jogo } from '../../models/jogo.model';
 
 @Component({
   selector: 'app-jogos',
@@ -15,44 +12,47 @@ import { Participante } from '../../models/participante.model';
   imports: [CommonModule, RouterModule],
   templateUrl: './jogos.component.html',
 })
-export class JogosComponent {
+export class JogosComponent implements OnInit {
   jogos: Jogo[] = [];
 
   constructor(
     private jogoService: JogoService,
-    private participanteService: ParticipanteService, // <- Adicionado
+    private participanteService: ParticipanteService,
     private router: Router,
     private authService: AuthService
-  ) {
+  ) {}
+
+  ngOnInit(): void {
     this.carregar();
   }
 
-  carregar() {
-    this.jogos = this.jogoService.listar();
+  private carregar() {
+  this.jogoService.listar().subscribe(jogos => {
+    jogos.forEach(j =>
+      j.participantes = this.participanteService.listarPorJogo(+j.id!) // +j.id! → string>number
+    );
+    this.jogos = jogos;
+  });
+}
 
-    this.jogos.forEach(jogo => {
-      jogo.participantes = this.participanteService.listarPorJogo(jogo.id);
-    });
-  }
 
   novo() {
     this.router.navigate(['/jogos/novo']);
   }
 
-  editar(id: number) {
+  editar(id: string) {
     this.router.navigate(['/jogos/editar', id]);
   }
 
-  remover(id: number) {
+  remover(id: string) {
     if (confirm('Deseja remover este jogo?')) {
-      this.jogoService.remover(id);
-      this.carregar(); // <- Atualiza a lista com participantes
+      this.jogoService.remover(id).then(() => this.carregar());
     }
   }
 
   logout() {
     this.authService.logout();
-    this.router.navigate(['/login']);
   }
 }
+
 

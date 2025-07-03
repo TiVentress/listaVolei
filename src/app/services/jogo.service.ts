@@ -1,32 +1,49 @@
 import { Injectable } from '@angular/core';
+import {
+  Firestore,
+  collection,
+  collectionData,
+  doc,
+  docData,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  CollectionReference,
+} from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
 import { Jogo } from '../models/jogo.model';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class JogoService {
-  private jogos: Jogo[] = [];
-  private proximoId = 1;
+  private jogosRef!: CollectionReference;   // declarado, mas só recebe valor no construtor
 
-  listar(): Jogo[] {
-    return this.jogos;
+  constructor(private firestore: Firestore) {
+    // Agora o Firestore já foi injetado, podemos criar a referência com segurança
+    this.jogosRef = collection(this.firestore, 'jogos');
   }
 
-  adicionar(jogo: Omit<Jogo, 'id'>): void {
-    const novoJogo: Jogo = { id: this.proximoId++, ...jogo };
-    this.jogos.push(novoJogo);
+  listar(): Observable<Jogo[]> {
+    return collectionData(this.jogosRef, { idField: 'id' }) as Observable<Jogo[]>;
   }
 
-  editar(id: number, dados: Partial<Jogo>): void {
-    const jogo = this.jogos.find(j => j.id === id);
-    if (jogo) Object.assign(jogo, dados);
+  obterPorId(id: string): Observable<Jogo> {
+    const jogoDoc = doc(this.firestore, `jogos/${id}`);
+    return docData(jogoDoc, { idField: 'id' }) as Observable<Jogo>;
   }
 
-  remover(id: number): void {
-    this.jogos = this.jogos.filter(j => j.id !== id);
+  adicionar(jogo: Omit<Jogo, 'id'>) {
+    return addDoc(this.jogosRef, jogo);
   }
 
-  obterPorId(id: number): Jogo | undefined {
-    return this.jogos.find(j => j.id === id);
+  editar(id: string, dados: Partial<Jogo>) {
+    const jogoDoc = doc(this.firestore, `jogos/${id}`);
+    return updateDoc(jogoDoc, dados);
+  }
+
+  remover(id: string) {
+    const jogoDoc = doc(this.firestore, `jogos/${id}`);
+    return deleteDoc(jogoDoc);
   }
 }
+
+
