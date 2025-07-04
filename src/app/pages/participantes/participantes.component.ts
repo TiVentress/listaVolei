@@ -12,22 +12,29 @@ import { Participante } from '../../models/participante.model';
   templateUrl: './participantes.component.html',
 })
 export class ParticipantesComponent {
-  jogoId!: number;
+  jogoId!: string;
   nome = '';
-  participantes: Participante[] = [];
-  filtroNome: string = '';
-
+  filtroNome = '';
+  participantes: Participante[] = [];     // ← array, não Observable
 
   constructor(
     private participanteService: ParticipanteService,
     private route: ActivatedRoute
   ) {
-    this.jogoId = Number(this.route.snapshot.paramMap.get('id'));
+    this.jogoId = this.route.snapshot.paramMap.get('id')!;
     this.carregar();
   }
 
   carregar() {
-    this.participantes = this.participanteService.listarPorJogo(this.jogoId);
+    this.participanteService
+      .listarPorJogo(this.jogoId)
+      .subscribe(ps => (this.participantes = ps));
+  }
+
+  get participantesFiltrados() {
+    return this.participantes.filter(p =>
+      p.nome.toLowerCase().includes(this.filtroNome.toLowerCase())
+    );
   }
 
   adicionar() {
@@ -38,25 +45,16 @@ export class ParticipantesComponent {
         confirmado: false,
       });
       this.nome = '';
-      this.carregar();
     }
-  }
-
-  remover(id: number) {
-    this.participanteService.remover(id);
-    this.carregar();
   }
 
   alternarConfirmacao(p: Participante) {
     p.confirmado
-      ? this.participanteService.desconfirmar(p.id)
-      : this.participanteService.confirmar(p.id);
-    this.carregar();
+      ? this.participanteService.desconfirmar(p.id!)
+      : this.participanteService.confirmar(p.id!);
   }
 
-  get participantesFiltrados(): Participante[] {
-  return this.participantes.filter(p =>
-    p.nome.toLowerCase().includes(this.filtroNome.toLowerCase())
-  );
+  remover(id: string) {
+    this.participanteService.remover(id);
   }
 }

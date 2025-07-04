@@ -1,30 +1,45 @@
 import { Injectable } from '@angular/core';
+import {
+  Firestore,
+  collection,
+  collectionData,
+  query,
+  where,
+  addDoc,
+  doc,
+  updateDoc,
+  deleteDoc,
+  CollectionReference,
+} from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
 import { Participante } from '../models/participante.model';
 
 @Injectable({ providedIn: 'root' })
 export class ParticipanteService {
-  private participantes: Participante[] = [];
-  private idAtual = 1;
+  private participantesRef!: CollectionReference; 
 
-  listarPorJogo(jogoId: number): Participante[] {
-    return this.participantes.filter(p => p.jogoId === jogoId);
+  constructor(private firestore: Firestore) {
+    this.participantesRef = collection(this.firestore, 'participantes');
   }
 
-  adicionar(participante: Omit<Participante, 'id'>) {
-    this.participantes.push({ ...participante, id: this.idAtual++ });
+  listarPorJogo(jogoId: string): Observable<Participante[]> {
+    const q = query(this.participantesRef, where('jogoId', '==', jogoId));
+    return collectionData(q, { idField: 'id' }) as Observable<Participante[]>;
   }
 
-  remover(id: number) {
-    this.participantes = this.participantes.filter(p => p.id !== id);
+  adicionar(p: Omit<Participante, 'id'>) {
+    return addDoc(this.participantesRef, p);
   }
 
-  confirmar(id: number) {
-    const p = this.participantes.find(p => p.id === id);
-    if (p) p.confirmado = true;
+  confirmar(id: string) {
+    return updateDoc(doc(this.firestore, `participantes/${id}`), { confirmado: true });
   }
 
-  desconfirmar(id: number) {
-    const p = this.participantes.find(p => p.id === id);
-    if (p) p.confirmado = false;
+  desconfirmar(id: string) {
+    return updateDoc(doc(this.firestore, `participantes/${id}`), { confirmado: false });
+  }
+
+  remover(id: string) {
+    return deleteDoc(doc(this.firestore, `participantes/${id}`));
   }
 }
