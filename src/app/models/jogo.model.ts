@@ -6,6 +6,7 @@ export interface Jogo {
   data: string;
   hora: string;
   local: string;
+  imagemUrl?: string;
   participantes?: Participante[];   // <- adicionado
 }
 

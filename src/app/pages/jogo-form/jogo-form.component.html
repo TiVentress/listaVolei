@@ -48,6 +48,14 @@
       <div class="invalid-feedback">O local é obrigatório.</div>
     </div>
 
+    <!-- Foto (opcional) -->
+  <div class="mb-3">
+    <label class="form-label">Foto do jogo</label>
+    <input type="file" class="form-control" (change)="selecionarArquivo($event)" />
+  </div>
+
+
+
     <div class="text-center d-flex justify-content-between mt-3">
       <button type="button" class="btn btn-secondary w-50 me-2" (click)="cancelar()">Cancelar</button>
       <button type="submit" class="btn btn-primary w-50">Salvar</button>
