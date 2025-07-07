@@ -7,6 +7,6 @@ export interface Jogo {
   hora: string;
   local: string;
   imagemUrl?: string;
-  participantes?: Participante[];   // <- adicionado
+  participantes?: Participante[];
 }
 

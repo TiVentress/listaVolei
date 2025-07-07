@@ -1,6 +1,6 @@
 export interface Participante {
-  id?: string;          // id gerado pelo Firestore
+  id?: string;         
   nome: string;
   confirmado: boolean;
-  jogoId: string;       // referência ao jogo
+  jogoId: string;   
 }

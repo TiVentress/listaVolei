@@ -10,8 +10,6 @@ import { authGuard } from './guards/auth.guard';
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
-  
-  // Rotas protegidas:
   { path: 'jogos', component: JogosComponent, canActivate: [authGuard] },
   { path: 'jogos/novo', component: JogoFormComponent, canActivate: [authGuard] },
   { path: 'jogos/editar/:id', component: JogoFormComponent, canActivate: [authGuard] },

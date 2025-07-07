@@ -5,7 +5,7 @@ import { AuthService } from '../services/auth.service';
 export const authGuard: CanActivateFn = async () => {
   const authService = inject(AuthService);
   const isLoggedIn = await authService.isAuthenticated();
-  return isLoggedIn; // está retornando boolean, que é o correto
+  return isLoggedIn;
 };
 
 

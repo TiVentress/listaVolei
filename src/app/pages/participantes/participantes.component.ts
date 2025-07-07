@@ -15,7 +15,7 @@ export class ParticipantesComponent {
   jogoId!: string;
   nome = '';
   filtroNome = '';
-  participantes: Participante[] = [];     // ← array, não Observable
+  participantes: Participante[] = [];  
 
   constructor(
     private participanteService: ParticipanteService,

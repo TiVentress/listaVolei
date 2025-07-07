@@ -28,14 +28,12 @@ export class JogosComponent implements OnInit {
 
   private carregar() {
   this.jogoService.listar().subscribe(jogos => {
-    // Para cada jogo, busque os participantes e grave como array
     jogos.forEach(j =>
       this.participanteService.listarPorJogo(j.id!).subscribe(ps => j.participantes = ps)
     );
     this.jogos = jogos;
   });
   }
-
 
   novo() {
     this.router.navigate(['/jogos/novo']);

@@ -1,6 +1,5 @@
 <div class="container mt-4" style="max-width: 350px;">
   <h2 class="text-center mb-4">{{ jogo.id ? 'Editar Jogo' : 'Novo Jogo' }}</h2>
-
   <form (ngSubmit)="form.valid && salvar()" #form="ngForm" novalidate>
     <div class="mb-3">
       <label for="data" class="form-label">Data</label>
@@ -17,7 +16,6 @@
       />
       <div class="invalid-feedback">A data é obrigatória.</div>
     </div>
-
     <div class="mb-3">
       <label for="hora" class="form-label">Hora</label>
       <input
@@ -32,7 +30,6 @@
       />
       <div class="invalid-feedback">A hora é obrigatória.</div>
     </div>
-
     <div class="mb-3">
       <label for="local" class="form-label">Local</label>
       <input
@@ -47,19 +44,13 @@
       />
       <div class="invalid-feedback">O local é obrigatório.</div>
     </div>
-
-    <!-- Foto (opcional) -->
-  <div class="mb-3">
-    <label class="form-label">Foto do jogo</label>
-    <input type="file" class="form-control" (change)="selecionarArquivo($event)" />
-  </div>
-
-
-
+    <div class="mb-3">
+      <label class="form-label">Foto do jogo</label>
+      <input type="file" class="form-control" (change)="selecionarArquivo($event)" />
+    </div>
     <div class="text-center d-flex justify-content-between mt-3">
       <button type="button" class="btn btn-secondary w-50 me-2" (click)="cancelar()">Cancelar</button>
       <button type="submit" class="btn btn-primary w-50">Salvar</button>
     </div>
-
   </form>
 </div>
