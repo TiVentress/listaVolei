@@ -15,10 +15,9 @@ import { Jogo } from '../models/jogo.model';
 
 @Injectable({ providedIn: 'root' })
 export class JogoService {
-  private jogosRef!: CollectionReference;   // declarado, mas só recebe valor no construtor
+  private jogosRef!: CollectionReference;   
 
   constructor(private firestore: Firestore) {
-    // Agora o Firestore já foi injetado, podemos criar a referência com segurança
     this.jogosRef = collection(this.firestore, 'jogos');
   }
 

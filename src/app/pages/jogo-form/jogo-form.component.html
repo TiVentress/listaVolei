@@ -1,6 +1,43 @@
 <div class="container mt-4" style="max-width: 350px;">
-  <h2 class="text-center mb-4">{{ jogo.id ? 'Editar Jogo' : 'Novo Jogo' }}</h2>
+  <!-- Usei a flag 'editando' do seu .ts para o título -->
+  <h2 class="text-center mb-4">{{ editando ? 'Editar Jogo' : 'Novo Jogo' }}</h2>
+
+  <!-- O #form é a referência para o formulário inteiro -->
   <form (ngSubmit)="form.valid && salvar()" #form="ngForm" novalidate>
+    
+    <div class="mb-3">
+      <label for="local" class="form-label">Local</label>
+      <input
+        type="text"
+        id="local"
+        name="local"
+        [(ngModel)]="jogo.local"
+        class="form-control"
+        required
+        #local="ngModel"
+        [ngClass]="{'is-invalid': local.invalid && form.submitted}"
+      />
+      <div class="invalid-feedback">O local é obrigatório.</div>
+    </div>
+
+    <!-- NOVO CAMPO ADICIONADO AQUI -->
+    <div class="mb-3">
+      <label for="maxParticipantes" class="form-label">Nº Máximo de Participantes</label>
+      <input
+        type="number"
+        id="maxParticipantes"
+        name="maxParticipantes"
+        [(ngModel)]="jogo.maxParticipantes"
+        class="form-control"
+        required
+        min="2"
+        #maxParticipantes="ngModel"
+        [ngClass]="{'is-invalid': maxParticipantes.invalid && form.submitted}"
+      />
+      <div class="invalid-feedback" *ngIf="maxParticipantes.errors?.['required']">O número de participantes é obrigatório.</div>
+      <div class="invalid-feedback" *ngIf="maxParticipantes.errors?.['min']">O jogo deve ter no mínimo 2 participantes.</div>
+    </div>
+
     <div class="mb-3">
       <label for="data" class="form-label">Data</label>
       <input
@@ -16,6 +53,8 @@
       />
       <div class="invalid-feedback">A data é obrigatória.</div>
     </div>
+
+    <!-- CORREÇÃO APLICADA ABAIXO -->
     <div class="mb-3">
       <label for="hora" class="form-label">Hora</label>
       <input
@@ -30,27 +69,18 @@
       />
       <div class="invalid-feedback">A hora é obrigatória.</div>
     </div>
-    <div class="mb-3">
-      <label for="local" class="form-label">Local</label>
-      <input
-        type="text"
-        id="local"
-        name="local"
-        [(ngModel)]="jogo.local"
-        class="form-control"
-        required
-        #local="ngModel"
-        [ngClass]="{'is-invalid': local.invalid && form.submitted}"
-      />
-      <div class="invalid-feedback">O local é obrigatório.</div>
-    </div>
+
     <div class="mb-3">
       <label class="form-label">Foto do jogo</label>
       <input type="file" class="form-control" (change)="selecionarArquivo($event)" />
+      <img *ngIf="editando && jogo.imagemUrl" [src]="jogo.imagemUrl" alt="Imagem atual" class="img-thumbnail mt-2">
     </div>
+
     <div class="text-center d-flex justify-content-between mt-3">
       <button type="button" class="btn btn-secondary w-50 me-2" (click)="cancelar()">Cancelar</button>
       <button type="submit" class="btn btn-primary w-50">Salvar</button>
     </div>
   </form>
 </div>
+
+

@@ -7,6 +7,8 @@ export interface Jogo {
   hora: string;
   local: string;
   imagemUrl?: string;
+  maxParticipantes: number;
+  status: 'Aberto' | 'Lotado' | 'Cancelado';
   participantes?: Participante[];
 }
 

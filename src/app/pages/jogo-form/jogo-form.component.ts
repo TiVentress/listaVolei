@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 import { JogoService } from '../../services/jogo.service';
-import { UploadService } from '../../services/upload.service';   // ← novo serviço
+import { UploadService } from '../../services/upload.service';
 import { Jogo } from '../../models/jogo.model';
 
 @Component({
@@ -14,20 +14,25 @@ import { Jogo } from '../../models/jogo.model';
   templateUrl: './jogo-form.component.html',
 })
 export class JogoFormComponent {
-  jogo: Partial<Jogo> = { data: '', hora: '', local: '' };
+  jogo: Partial<Jogo> = {
+    local: '',
+    data: '',
+    hora: '',
+    imagemUrl: '',
+    maxParticipantes: 14, 
+    status: 'Aberto'
+  };
 
   editando = false;
   idEditando: string | null = null;
-
   arquivoSelecionado?: File;
-
   dataAtual = new Date().toISOString().split('T')[0];
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private jogoService: JogoService,
-    private uploadSrv: UploadService        
+    private uploadSrv: UploadService
   ) {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
@@ -39,7 +44,9 @@ export class JogoFormComponent {
 
   selecionarArquivo(evt: Event) {
     const file = (evt.target as HTMLInputElement).files?.[0];
-    if (file) this.arquivoSelecionado = file;
+    if (file) {
+      this.arquivoSelecionado = file;
+    }
   }
 
   async salvar() {
@@ -51,10 +58,12 @@ export class JogoFormComponent {
       if (this.editando && this.idEditando) {
         await this.jogoService.editar(this.idEditando, this.jogo);
       } else {
+        this.jogo.status = 'Aberto';
         await this.jogoService.adicionar(this.jogo as Omit<Jogo, 'id'>);
       }
 
       this.router.navigate(['/jogos']);
+
     } catch (e) {
       console.error('Falha ao salvar:', e);
       alert('Erro ao salvar (veja console).');
