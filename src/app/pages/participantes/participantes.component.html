@@ -24,8 +24,9 @@
     >
       <div class="me-2">
         <span>{{ p.nome }}</span> —
-        <strong class="text-{{ p.confirmado ? 'success' : 'secondary' }}">
-          {{ p.confirmado ? 'Confirmado' : 'Não Confirmado' }}
+        <!-- CORREÇÃO APLICADA ABAIXO -->
+        <strong class="text-{{ p.presencaConfirmada ? 'success' : 'secondary' }}">
+          {{ p.presencaConfirmada ? 'Confirmado' : 'Não Confirmado' }}
         </strong>
       </div>
       <div class="text-nowrap">
@@ -33,7 +34,8 @@
           class="btn btn-outline-primary btn-sm me-1"
           (click)="alternarConfirmacao(p)"
         >
-          {{ p.confirmado ? 'Desconfirmar' : 'Confirmar' }}
+          <!-- CORREÇÃO APLICADA ABAIXO -->
+          {{ p.presencaConfirmada ? 'Desconfirmar' : 'Confirmar' }}
         </button>
         <button 
           class="btn btn-outline-danger btn-sm"

@@ -1,6 +1,6 @@
 export interface Participante {
-  id?: string;         
+  id?: string;
   nome: string;
-  confirmado: boolean;
-  jogoId: string;   
+  jogoId?: string; // Este campo já não é guardado na base de dados, mas pode ser útil no front-end.
+  presencaConfirmada: boolean; // CORRIGIDO: de 'confirmado' para 'presencaConfirmada'
 }

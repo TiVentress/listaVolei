@@ -23,10 +23,11 @@
         <ng-container *ngIf="jogo.participantes.length > 0; else semParticipantes">
           <ul class="list-group mt-3">
             <li class="list-group-item d-flex justify-content-center align-items-center gap-2"
-              *ngFor="let p of jogo.participantes">
+                *ngFor="let p of jogo.participantes">
               <span class="fw-semibold">{{ p.nome }}</span>
-              <span class="badge bg-{{ p.confirmado ? 'success' : 'secondary' }}">
-                {{ p.confirmado ? 'Confirmado' : 'Não Confirmado' }}
+              <!-- CORREÇÃO APLICADA ABAIXO -->
+              <span class="badge bg-{{ p.presencaConfirmada ? 'success' : 'secondary' }}">
+                {{ p.presencaConfirmada ? 'Confirmado' : 'Não Confirmado' }}
               </span>
             </li>
           </ul>

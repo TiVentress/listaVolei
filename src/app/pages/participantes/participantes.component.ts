@@ -15,17 +15,19 @@ export class ParticipantesComponent {
   jogoId!: string;
   nome = '';
   filtroNome = '';
-  participantes: Participante[] = [];  
+  participantes: Participante[] = [];
 
   constructor(
     private participanteService: ParticipanteService,
     private route: ActivatedRoute
   ) {
+    // Isto continua correto, pegando o ID do jogo da rota.
     this.jogoId = this.route.snapshot.paramMap.get('id')!;
     this.carregar();
   }
 
   carregar() {
+    // Esta chamada já estava correta para o novo serviço.
     this.participanteService
       .listarPorJogo(this.jogoId)
       .subscribe(ps => (this.participantes = ps));
@@ -39,22 +41,29 @@ export class ParticipantesComponent {
 
   adicionar() {
     if (this.nome.trim()) {
-      this.participanteService.adicionar({
+      // CORREÇÃO:
+      // 1. A chamada ao serviço agora passa o jogoId primeiro.
+      // 2. O objeto a ser adicionado já não precisa do jogoId.
+      // 3. Usamos 'presencaConfirmada' em vez de 'confirmado'.
+      this.participanteService.adicionar(this.jogoId, {
         nome: this.nome,
-        jogoId: this.jogoId,
-        confirmado: false,
+        presencaConfirmada: false,
       });
       this.nome = '';
     }
   }
 
   alternarConfirmacao(p: Participante) {
-    p.confirmado
-      ? this.participanteService.desconfirmar(p.id!)
-      : this.participanteService.confirmar(p.id!);
+    // CORREÇÃO:
+    // 1. Passamos o jogoId como primeiro argumento para os métodos do serviço.
+    // 2. Verificamos a propriedade 'presencaConfirmada'.
+    p.presencaConfirmada
+      ? this.participanteService.desconfirmar(this.jogoId, p.id!)
+      : this.participanteService.confirmar(this.jogoId, p.id!);
   }
 
   remover(id: string) {
-    this.participanteService.remover(id);
+    // CORREÇÃO: Passamos o jogoId como primeiro argumento.
+    this.participanteService.remover(this.jogoId, id);
   }
 }
