@@ -6,11 +6,45 @@
   <div class="text-center mb-4">
     <button class="btn btn-success" (click)="novo()">Novo Jogo</button>
   </div>
+
   <div *ngFor="let jogo of jogos" class="card mb-4 shadow-sm w-50 mx-auto border border-primary-subtle rounded-4 shadow p-3">
-    <div class="card-body">
+    
+    <!-- ÁREA DA IMAGEM REVERTIDA PARA O ESTILO "COVER" -->
+    <img 
+      *ngIf="jogo.imagemUrl" 
+      [src]="jogo.imagemUrl" 
+      class="card-img-top rounded mb-3" 
+      alt="Foto do jogo em {{ jogo.local }}"
+      style="height: 200px; width: 100%; object-fit: cover;"
+    >
+    <img 
+      *ngIf="!jogo.imagemUrl" 
+      src="https://placehold.co/600x200/e9ecef/6c757d?text=Sem+Imagem" 
+      class="card-img-top rounded mb-3"
+      alt="Placeholder para imagem do jogo"
+      style="height: 200px; width: 100%; object-fit: cover;"
+    >
+
+    <div class="card-body pt-0">
       <h5 class="card-title mb-3 text-center">
-        <strong>{{ jogo.local }} — {{ jogo.data | date:'dd-MM-yyyy'}} às {{ jogo.hora }}</strong>
+        <strong>{{ jogo.local }}</strong>
+        <br>
+        <small class="text-muted">{{ jogo.data | date:'dd/MM/yyyy'}} às {{ jogo.hora }}</small>
       </h5>
+      
+      <div class="text-center mb-3">
+        <span 
+          class="badge rounded-pill"
+          [ngClass]="{
+            'bg-success': jogo.status === 'Aberto',
+            'bg-danger': jogo.status === 'Lotado',
+            'bg-secondary': jogo.status === 'Cancelado'
+          }"
+        >
+          {{ jogo.status }}
+        </span>
+      </div>
+
       <div class="mb-3 text-center">
         <button class="btn btn-primary btn-sm me-2" (click)="editar(jogo.id!)">Editar</button>
         <button class="btn btn-danger btn-sm me-2" (click)="remover(jogo.id!)">Remover</button>
@@ -18,6 +52,7 @@
           Participantes
         </button>
       </div>
+
       <div *ngIf="jogo.participantes" class="text-center">
         <strong>Participantes:</strong>
         <ng-container *ngIf="jogo.participantes.length > 0; else semParticipantes">
@@ -25,7 +60,6 @@
             <li class="list-group-item d-flex justify-content-center align-items-center gap-2"
                 *ngFor="let p of jogo.participantes">
               <span class="fw-semibold">{{ p.nome }}</span>
-              <!-- CORREÇÃO APLICADA ABAIXO -->
               <span class="badge bg-{{ p.presencaConfirmada ? 'success' : 'secondary' }}">
                 {{ p.presencaConfirmada ? 'Confirmado' : 'Não Confirmado' }}
               </span>
