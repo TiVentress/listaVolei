@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 })
 export class FirebaseAuthService {
 
-  constructor(private auth: Auth, private router: Router) {}
+  constructor(public auth: Auth, private router: Router) {}
 
   login(email: string, password: string) {
     return signInWithEmailAndPassword(this.auth, email, password);
