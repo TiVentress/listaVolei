@@ -14,7 +14,7 @@ export const routes: Routes = [
   { path: 'jogos/novo', component: JogoFormComponent, canActivate: [authGuard] },
   { path: 'jogos/editar/:id', component: JogoFormComponent, canActivate: [authGuard] },
   { path: 'jogos/:id/participantes', loadComponent: () => import('./pages/participantes/participantes.component').then(m => m.ParticipantesComponent), canActivate: [authGuard] },
-
+  { path: 'register', loadComponent: () => import('./pages/register/register.component').then(m => m.RegisterComponent) },
   { path: 'participantes/novo', component: ParticipanteFormComponent, canActivate: [authGuard] },
   { path: 'participantes/editar/:id', component: ParticipanteFormComponent, canActivate: [authGuard] },
 
