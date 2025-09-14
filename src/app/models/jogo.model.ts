@@ -10,5 +10,6 @@ export interface Jogo {
   maxParticipantes: number;
   status: 'Aberto' | 'Lotado' | 'Cancelado';
   participantes?: Participante[];
+  creatorId?: string;
 }
 

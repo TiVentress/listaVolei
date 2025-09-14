@@ -7,22 +7,19 @@
     <button class="btn btn-success" (click)="novo()">Novo Jogo</button>
   </div>
 
-  <div *ngFor="let jogo of jogos" class="card mb-4 shadow-sm w-50 mx-auto border border-primary-subtle rounded-4 shadow p-3">
-    
-    <img 
-      *ngIf="jogo.imagemUrl" 
-      [src]="jogo.imagemUrl" 
-      class="card-img-top rounded mb-3" 
-      alt="Foto do jogo em {{ jogo.local }}"
-      style="height: 200px; width: 100%; object-fit: cover;"
-    >
-    <div *ngIf="!jogo.imagemUrl" 
-         class="card-img-top rounded mb-3 d-flex align-items-center justify-content-center" 
-         style="height: 200px; width: 100%; background-color: #e9ecef;">
-      
-      <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="#6c757d" class="bi bi-image" viewBox="0 0 16 16">
-        <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
-        <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z"/>
+  <div *ngFor="let jogo of jogos"
+    class="card mb-4 shadow-sm w-50 mx-auto border border-primary-subtle rounded-4 shadow p-3">
+
+    <img *ngIf="jogo.imagemUrl" [src]="jogo.imagemUrl" class="card-img-top rounded mb-3"
+      alt="Foto do jogo em {{ jogo.local }}" style="height: 200px; width: 100%; object-fit: cover;">
+    <div *ngIf="!jogo.imagemUrl" class="card-img-top rounded mb-3 d-flex align-items-center justify-content-center"
+      style="height: 200px; width: 100%; background-color: #e9ecef;">
+
+      <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="#6c757d" class="bi bi-image"
+        viewBox="0 0 16 16">
+        <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
+        <path
+          d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z" />
       </svg>
     </div>
 
@@ -32,23 +29,23 @@
         <br>
         <small class="text-muted">{{ jogo.data | date:'dd/MM/yyyy'}} às {{ jogo.hora }}</small>
       </h5>
-      
+
       <div class="text-center mb-3">
-        <span 
-          class="badge rounded-pill"
-          [ngClass]="{
+        <span class="badge rounded-pill" [ngClass]="{
             'bg-success': jogo.status === 'Aberto',
             'bg-danger': jogo.status === 'Lotado',
             'bg-secondary': jogo.status === 'Cancelado'
-          }"
-        >
+          }">
           {{ jogo.status }}
         </span>
       </div>
 
       <div class="mb-3 text-center">
-        <button class="btn btn-primary btn-sm me-2" (click)="editar(jogo.id!)">Editar</button>
-        <button class="btn btn-danger btn-sm me-2" (click)="remover(jogo.id!)">Remover</button>
+        <ng-container *ngIf="jogo.creatorId === userId">
+          <button class="btn btn-primary btn-sm me-2" (click)="editar(jogo.id!)">Editar</button>
+          <button class="btn btn-danger btn-sm me-2" (click)="remover(jogo.id!)">Remover</button>
+        </ng-container>
+
         <button class="btn btn-info btn-sm" [routerLink]="['/jogos', jogo.id, 'participantes']">
           Participantes
         </button>
@@ -59,7 +56,7 @@
         <ng-container *ngIf="jogo.participantes.length > 0; else semParticipantes">
           <ul class="list-group mt-3">
             <li class="list-group-item d-flex justify-content-center align-items-center gap-2"
-                *ngFor="let p of jogo.participantes">
+              *ngFor="let p of jogo.participantes">
               <span class="fw-semibold">{{ p.nome }}</span>
               <span class="badge bg-{{ p.presencaConfirmada ? 'success' : 'secondary' }}">
                 {{ p.presencaConfirmada ? 'Confirmado' : 'Não Confirmado' }}

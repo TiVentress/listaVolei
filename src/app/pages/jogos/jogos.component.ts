@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { JogoService } from '../../services/jogo.service';
 import { ParticipanteService } from '../../services/participante.service';
-import { AuthService } from '../../services/auth.service';
 import { Jogo } from '../../models/jogo.model';
+import { FirebaseAuthService } from '../../services/firebase-auth.service'; // 1. MUDAR/ADICIONAR a importação
 
 @Component({
   selector: 'app-jogos',
@@ -14,25 +14,28 @@ import { Jogo } from '../../models/jogo.model';
 })
 export class JogosComponent implements OnInit {
   jogos: Jogo[] = [];
+  userId: string | null = null; // 2. CRIAR a propriedade para o ID do usuário
 
   constructor(
     private jogoService: JogoService,
     private participanteService: ParticipanteService,
     private router: Router,
-    private authService: AuthService
+    private authService: FirebaseAuthService // 3. MUDAR para FirebaseAuthService
   ) {}
 
   ngOnInit(): void {
+    // 4. PEGAR o ID do usuário logado ao iniciar
+    this.userId = this.authService.auth.currentUser?.uid || null;
     this.carregar();
   }
 
   private carregar() {
-  this.jogoService.listar().subscribe(jogos => {
-    jogos.forEach(j =>
-      this.participanteService.listarPorJogo(j.id!).subscribe(ps => j.participantes = ps)
-    );
-    this.jogos = jogos;
-  });
+    this.jogoService.listar().subscribe(jogos => {
+      jogos.forEach(j =>
+        this.participanteService.listarPorJogo(j.id!).subscribe(ps => j.participantes = ps)
+      );
+      this.jogos = jogos;
+    });
   }
 
   novo() {
@@ -50,8 +53,8 @@ export class JogosComponent implements OnInit {
   }
 
   logout() {
+    // Se o logout estiver no FirebaseAuthService, mantenha authService.logout().
+    // Se estiver em outro serviço, ajuste conforme necessário.
     this.authService.logout();
   }
 }
-
-
