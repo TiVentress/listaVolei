@@ -7,6 +7,13 @@
 
           <form #form="ngForm" (ngSubmit)="onSubmit(form)">
             <div class="mb-3">
+              <label for="name" class="form-label">Nome Completo</label>
+              <input type="text" class="form-control" name="name" ngModel required #name="ngModel">
+              <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger small mt-1">
+                Nome é obrigatório.
+              </div>
+            </div>
+            <div class="mb-3">
               <label for="email" class="form-label">Email</label>
               <input type="email" class="form-control" name="email" ngModel required email #email="ngModel" placeholder="seuemail@exemplo.com">
               <div *ngIf="email.invalid && (email.dirty || email.touched)" class="text-danger small mt-1">
