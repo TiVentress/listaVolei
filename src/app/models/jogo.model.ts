@@ -11,5 +11,6 @@ export interface Jogo {
   status: 'Aberto' | 'Lotado' | 'Cancelado';
   participantes?: Participante[];
   creatorId?: string;
+  descricao?: string;
 }
 

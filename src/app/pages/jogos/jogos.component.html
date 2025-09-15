@@ -30,6 +30,10 @@
         <small class="text-muted">{{ jogo.data | date:'dd/MM/yyyy'}} às {{ jogo.hora }}</small>
       </h5>
 
+      <p *ngIf="jogo.descricao" class="card-text text-center text-muted border-bottom pb-3 mb-3">
+        {{ jogo.descricao }}
+      </p>
+
       <div class="text-center mb-3">
         <span class="badge rounded-pill" [ngClass]="{
             'bg-success': jogo.status === 'Aberto',
@@ -51,20 +55,17 @@
         </button>
 
         <ng-container *ngIf="jogo.creatorId !== userId">
-
           <button *ngIf="!isParticipante(jogo)"
             class="btn btn-success btn-sm ms-2"
             (click)="entrarNoJogo(jogo)"
             [disabled]="jogo.participantes && jogo.participantes.length >= jogo.maxParticipantes">
             {{ (jogo.participantes && jogo.participantes.length >= jogo.maxParticipantes) ? 'Lotado' : 'Entrar no Jogo' }}
           </button>
-
           <button *ngIf="isParticipante(jogo)"
             class="btn btn-warning btn-sm ms-2"
             (click)="sairDoJogo(jogo)">
             Sair do Jogo
           </button>
-
         </ng-container>
       </div>
 

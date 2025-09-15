@@ -1,8 +1,6 @@
 <div class="container mt-4" style="max-width: 350px;">
-  <!-- Usei a flag 'editando' do seu .ts para o título -->
   <h2 class="text-center mb-4">{{ editando ? 'Editar Jogo' : 'Novo Jogo' }}</h2>
 
-  <!-- O #form é a referência para o formulário inteiro -->
   <form (ngSubmit)="form.valid && salvar()" #form="ngForm" novalidate>
     
     <div class="mb-3">
@@ -20,7 +18,18 @@
       <div class="invalid-feedback">O local é obrigatório.</div>
     </div>
 
-    <!-- NOVO CAMPO ADICIONADO AQUI -->
+    <div class="mb-3">
+      <label for="descricao" class="form-label">Descrição do Jogo</label>
+      <textarea 
+        class="form-control" 
+        id="descricao" 
+        name="descricao" 
+        rows="3" 
+        [(ngModel)]="jogo.descricao" 
+        placeholder="Ex: Nível intermediário, levar bola, etc.">
+      </textarea>
+    </div>
+
     <div class="mb-3">
       <label for="maxParticipantes" class="form-label">Nº Máximo de Participantes</label>
       <input
@@ -54,7 +63,6 @@
       <div class="invalid-feedback">A data é obrigatória.</div>
     </div>
 
-    <!-- CORREÇÃO APLICADA ABAIXO -->
     <div class="mb-3">
       <label for="hora" class="form-label">Hora</label>
       <input
@@ -82,5 +90,3 @@
     </div>
   </form>
 </div>
-
-
