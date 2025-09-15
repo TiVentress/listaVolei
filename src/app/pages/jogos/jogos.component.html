@@ -49,6 +49,23 @@
         <button class="btn btn-info btn-sm" [routerLink]="['/jogos', jogo.id, 'participantes']">
           Participantes
         </button>
+
+        <ng-container *ngIf="jogo.creatorId !== userId">
+
+          <button *ngIf="!isParticipante(jogo)"
+            class="btn btn-success btn-sm ms-2"
+            (click)="entrarNoJogo(jogo)"
+            [disabled]="jogo.participantes && jogo.participantes.length >= jogo.maxParticipantes">
+            {{ (jogo.participantes && jogo.participantes.length >= jogo.maxParticipantes) ? 'Lotado' : 'Entrar no Jogo' }}
+          </button>
+
+          <button *ngIf="isParticipante(jogo)"
+            class="btn btn-warning btn-sm ms-2"
+            (click)="sairDoJogo(jogo)">
+            Sair do Jogo
+          </button>
+
+        </ng-container>
       </div>
 
       <div *ngIf="jogo.participantes" class="text-center">

@@ -4,7 +4,8 @@ import { Router, RouterModule } from '@angular/router';
 import { JogoService } from '../../services/jogo.service';
 import { ParticipanteService } from '../../services/participante.service';
 import { Jogo } from '../../models/jogo.model';
-import { FirebaseAuthService } from '../../services/firebase-auth.service'; // 1. MUDAR/ADICIONAR a importação
+import { FirebaseAuthService } from '../../services/firebase-auth.service';
+import { Participante } from '../../models/participante.model'; // 1. IMPORTAR O MODELO PARTICIPANTE
 
 @Component({
   selector: 'app-jogos',
@@ -14,17 +15,16 @@ import { FirebaseAuthService } from '../../services/firebase-auth.service'; // 1
 })
 export class JogosComponent implements OnInit {
   jogos: Jogo[] = [];
-  userId: string | null = null; // 2. CRIAR a propriedade para o ID do usuário
+  userId: string | null = null;
 
   constructor(
     private jogoService: JogoService,
     private participanteService: ParticipanteService,
     private router: Router,
-    private authService: FirebaseAuthService // 3. MUDAR para FirebaseAuthService
+    private authService: FirebaseAuthService
   ) {}
 
   ngOnInit(): void {
-    // 4. PEGAR o ID do usuário logado ao iniciar
     this.userId = this.authService.auth.currentUser?.uid || null;
     this.carregar();
   }
@@ -53,8 +53,63 @@ export class JogosComponent implements OnInit {
   }
 
   logout() {
-    // Se o logout estiver no FirebaseAuthService, mantenha authService.logout().
-    // Se estiver em outro serviço, ajuste conforme necessário.
     this.authService.logout();
+  }
+
+  isParticipante(jogo: Jogo): boolean {
+    if (!this.userId || !jogo.participantes) {
+      return false;
+    }
+    return jogo.participantes.some(p => p.id === this.userId);
+  }
+
+  // ===============================================================
+  // 2. ADICIONAR AS DUAS NOVAS FUNÇÕES ABAIXO
+  // ===============================================================
+
+  entrarNoJogo(jogo: Jogo) {
+    const user = this.authService.auth.currentUser;
+    if (!user || !user.displayName || !user.uid) {
+      alert("Erro: Não foi possível identificar o usuário.");
+      return;
+    }
+
+    if (jogo.participantes && jogo.participantes.length >= jogo.maxParticipantes) {
+      alert("Desculpe, este jogo já está lotado.");
+      return;
+    }
+
+    const novoParticipante: Participante = {
+      id: user.uid,
+      nome: user.displayName,
+      presencaConfirmada: true
+    };
+
+    this.participanteService.inscreverUsuario(jogo.id!, novoParticipante)
+      .then(() => {
+        console.log('Inscrição realizada com sucesso!');
+        // this.carregar(); // O Firestore já atualiza em tempo real, mas podemos forçar se necessário.
+      })
+      .catch(err => {
+        console.error("Erro ao se inscrever no jogo:", err);
+        alert("Ocorreu um erro ao tentar se inscrever.");
+      });
+  }
+
+  sairDoJogo(jogo: Jogo) {
+    if (!this.userId) {
+      alert("Erro: Não foi possível identificar o usuário.");
+      return;
+    }
+
+    this.participanteService.cancelarInscricao(jogo.id!, this.userId)
+      .then(() => {
+        console.log('Inscrição cancelada com sucesso!');
+        // this.carregar();
+      })
+      .catch(err => {
+        console.error("Erro ao cancelar inscrição:", err);
+        alert("Ocorreu um erro ao tentar sair do jogo.");
+      });
   }
 }
