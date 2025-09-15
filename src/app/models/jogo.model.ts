@@ -12,5 +12,6 @@ export interface Jogo {
   participantes?: Participante[];
   creatorId?: string;
   descricao?: string;
+  listaDeEspera?: Participante[];
 }
 

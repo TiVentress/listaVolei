@@ -9,7 +9,7 @@ import {
   deleteDoc,
   CollectionReference,
   DocumentData,
-  setDoc // 1. IMPORTAR 'setDoc'
+  setDoc
 } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { Participante } from '../models/participante.model';
@@ -18,6 +18,8 @@ import { Participante } from '../models/participante.model';
 export class ParticipanteService {
 
   constructor(private firestore: Firestore) {}
+
+  // --- MÉTODOS EXISTENTES PARA PARTICIPANTES CONFIRMADOS ---
 
   private getParticipantesRef(jogoId: string): CollectionReference<DocumentData> {
     return collection(this.firestore, `jogos/${jogoId}/participantes`);
@@ -48,33 +50,45 @@ export class ParticipanteService {
     return deleteDoc(docRef);
   }
 
+  inscreverUsuario(jogoId: string, participante: Participante) {
+    const pDoc = doc(this.firestore, `jogos/${jogoId}/participantes/${participante.id}`);
+    return setDoc(pDoc, participante);
+  }
+
+  cancelarInscricao(jogoId: string, participanteId: string) {
+    const pDoc = doc(this.firestore, `jogos/${jogoId}/participantes/${participanteId}`);
+    return deleteDoc(pDoc);
+  }
+
   // ===============================================================
-  // 2. ADICIONAR OS DOIS NOVOS MÉTODOS ABAIXO
+  // NOVOS MÉTODOS PARA A LISTA DE ESPERA
   // ===============================================================
 
+  private getListaDeEsperaRef(jogoId: string): CollectionReference<DocumentData> {
+    return collection(this.firestore, `jogos/${jogoId}/listaDeEspera`);
+  }
+
   /**
-   * Inscreve um usuário em um jogo.
-   * Usa o ID do usuário como ID do documento para evitar duplicatas.
-   * @param jogoId O ID do jogo no qual se inscrever.
-   * @param participante O objeto do participante (incluindo seu ID e nome).
+   * Lista todos os usuários na lista de espera de um jogo.
    */
-  inscreverUsuario(jogoId: string, participante: Participante) {
-    // Cria uma referência para o documento do participante usando o ID do próprio usuário.
-    // Ex: /jogos/ID_DO_JOGO/participantes/ID_DO_USUARIO
-    const pDoc = doc(this.firestore, `jogos/${jogoId}/participantes/${participante.id}`);
-    
-    // setDoc cria ou sobrescreve o documento. Isso garante que o usuário
-    // só possa se inscrever uma vez, pois o ID do documento é fixo (seu UID).
+  listarListaDeEspera(jogoId: string): Observable<Participante[]> {
+    const listaDeEsperaRef = this.getListaDeEsperaRef(jogoId);
+    return collectionData(listaDeEsperaRef, { idField: 'id' }) as Observable<Participante[]>;
+  }
+
+  /**
+   * Adiciona o usuário logado à lista de espera de um jogo.
+   */
+  entrarNaListaDeEspera(jogoId: string, participante: Participante) {
+    const pDoc = doc(this.firestore, `jogos/${jogoId}/listaDeEspera/${participante.id}`);
     return setDoc(pDoc, participante);
   }
 
   /**
-   * Remove a inscrição de um usuário de um jogo.
-   * @param jogoId O ID do jogo do qual sair.
-   * @param participanteId O ID do usuário a ser removido (seu próprio UID).
+   * Remove o usuário logado da lista de espera de um jogo.
    */
-  cancelarInscricao(jogoId: string, participanteId: string) {
-    const pDoc = doc(this.firestore, `jogos/${jogoId}/participantes/${participanteId}`);
+  sairDaListaDeEspera(jogoId: string, participanteId: string) {
+    const pDoc = doc(this.firestore, `jogos/${jogoId}/listaDeEspera/${participanteId}`);
     return deleteDoc(pDoc);
   }
 }

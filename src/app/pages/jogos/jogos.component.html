@@ -48,44 +48,59 @@
         <ng-container *ngIf="jogo.creatorId === userId">
           <button class="btn btn-primary btn-sm me-2" (click)="editar(jogo.id!)">Editar</button>
           <button class="btn btn-danger btn-sm me-2" (click)="remover(jogo.id!)">Remover</button>
+          <button class="btn btn-info btn-sm" [routerLink]="['/jogos', jogo.id, 'participantes']">
+            Participantes
+          </button>
         </ng-container>
-
-        <button class="btn btn-info btn-sm" [routerLink]="['/jogos', jogo.id, 'participantes']">
-          Participantes
-        </button>
 
         <ng-container *ngIf="jogo.creatorId !== userId">
-          <button *ngIf="!isParticipante(jogo)"
-            class="btn btn-success btn-sm ms-2"
-            (click)="entrarNoJogo(jogo)"
-            [disabled]="jogo.participantes && jogo.participantes.length >= jogo.maxParticipantes">
-            {{ (jogo.participantes && jogo.participantes.length >= jogo.maxParticipantes) ? 'Lotado' : 'Entrar no Jogo' }}
-          </button>
-          <button *ngIf="isParticipante(jogo)"
-            class="btn btn-warning btn-sm ms-2"
-            (click)="sairDoJogo(jogo)">
-            Sair do Jogo
-          </button>
+
+          <ng-container *ngIf="jogo.participantes && jogo.participantes.length < jogo.maxParticipantes">
+            <button *ngIf="!isParticipante(jogo)" class="btn btn-success btn-sm ms-2" (click)="entrarNoJogo(jogo)">
+              Entrar no Jogo
+            </button>
+            <button *ngIf="isParticipante(jogo)" class="btn btn-warning btn-sm ms-2" (click)="sairDoJogo(jogo)">
+              Sair do Jogo
+            </button>
+          </ng-container>
+
+          <ng-container *ngIf="jogo.participantes && jogo.participantes.length >= jogo.maxParticipantes">
+             <button *ngIf="!isParticipante(jogo) && !isInListaDeEspera(jogo)" class="btn btn-primary btn-sm ms-2" (click)="entrarNaListaDeEspera(jogo)">
+               Entrar na Lista de Espera
+             </button>
+             <button *ngIf="isInListaDeEspera(jogo)" class="btn btn-secondary btn-sm ms-2" (click)="sairDaListaDeEspera(jogo)">
+               Sair da Lista de Espera
+             </button>
+          </ng-container>
+
+        </ng-container>
+      </div>
+      
+      <div class="text-center">
+        <div *ngIf="jogo.participantes && jogo.participantes.length > 0">
+            <strong>Participantes:</strong>
+            <ul class="list-group mt-2">
+                <li class="list-group-item d-flex justify-content-center align-items-center gap-2" *ngFor="let p of jogo.participantes">
+                    <span class="fw-semibold">{{ p.nome }}</span>
+                    <span class="badge bg-{{ p.presencaConfirmada ? 'success' : 'secondary' }}">
+                        {{ p.presencaConfirmada ? 'Confirmado' : 'Não Confirmado' }}
+                    </span>
+                </li>
+            </ul>
+        </div>
+
+        <div *ngIf="jogo.listaDeEspera && jogo.listaDeEspera.length > 0" class="mt-3">
+            <strong>Lista de Espera:</strong>
+            <ul class="list-group mt-2">
+                <li class="list-group-item" *ngFor="let p of jogo.listaDeEspera">{{ p.nome }}</li>
+            </ul>
+        </div>
+
+        <ng-container *ngIf="(!jogo.participantes || jogo.participantes.length === 0) && (!jogo.listaDeEspera || jogo.listaDeEspera.length === 0)">
+          <div class="alert alert-light mt-2 text-muted">Nenhum participante cadastrado.</div>
         </ng-container>
       </div>
 
-      <div *ngIf="jogo.participantes" class="text-center">
-        <strong>Participantes:</strong>
-        <ng-container *ngIf="jogo.participantes.length > 0; else semParticipantes">
-          <ul class="list-group mt-3">
-            <li class="list-group-item d-flex justify-content-center align-items-center gap-2"
-              *ngFor="let p of jogo.participantes">
-              <span class="fw-semibold">{{ p.nome }}</span>
-              <span class="badge bg-{{ p.presencaConfirmada ? 'success' : 'secondary' }}">
-                {{ p.presencaConfirmada ? 'Confirmado' : 'Não Confirmado' }}
-              </span>
-            </li>
-          </ul>
-        </ng-container>
-        <ng-template #semParticipantes>
-          <div class="alert alert-light mt-2 text-muted">Nenhum participante cadastrado.</div>
-        </ng-template>
-      </div>
     </div>
   </div>
 </div>
