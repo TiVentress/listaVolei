@@ -6,6 +6,7 @@ import { Router, RouterModule } from '@angular/router';
 import { FirebaseAuthService } from '../../services/firebase-auth.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { UserService } from '../../services/user.service'; // 1. IMPORTAR O UserService
 
 @Component({
   selector: 'app-register',
@@ -17,7 +18,11 @@ export class RegisterComponent {
   error: string | null = null;
   isLoading: boolean = false;
 
-  constructor(private authService: FirebaseAuthService, private router: Router) {}
+  constructor(
+    private authService: FirebaseAuthService,
+    private router: Router,
+    private userService: UserService // 2. INJETAR o UserService
+  ) {}
 
   onSubmit(form: NgForm) {
     if (form.invalid) {
@@ -27,8 +32,8 @@ export class RegisterComponent {
     this.isLoading = true;
     this.error = null;
 
-    // 1. OBTER o novo campo 'name' do formulário
-    const { name, email, password, confirmPassword } = form.value;
+    // 3. OBTER O CAMPO 'phone' do formulário
+    const { name, email, password, confirmPassword, phone } = form.value;
 
     if (password !== confirmPassword) {
       this.error = 'As senhas não coincidem.';
@@ -36,9 +41,21 @@ export class RegisterComponent {
       return;
     }
 
-    // 2. PASSAR o nome para o serviço de registro
+    // 4. ATUALIZAR A LÓGICA DE REGISTRO
     this.authService.register(name, email, password)
+      .then((userCredential) => {
+        // Após criar o usuário no Auth, preparamos os dados para salvar no Firestore
+        const newUser = {
+          uid: userCredential.user.uid,
+          nome: name,
+          email: email,
+          celular: phone
+        };
+        // Chamamos o userService para salvar esses dados extras
+        return this.userService.saveUser(newUser);
+      })
       .then(() => {
+        // Só navega para a página de jogos DEPOIS que os dados do usuário forem salvos
         this.isLoading = false;
         this.router.navigate(['/jogos']);
       })
