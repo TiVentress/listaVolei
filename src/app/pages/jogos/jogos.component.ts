@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { JogoService } from '../../services/jogo.service';
 import { ParticipanteService } from '../../services/participante.service';
 import { Jogo } from '../../models/jogo.model';
@@ -10,18 +11,22 @@ import { Participante } from '../../models/participante.model';
 @Component({
   selector: 'app-jogos',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule],
+  providers: [DatePipe],
   templateUrl: './jogos.component.html',
 })
 export class JogosComponent implements OnInit {
+  jogosOriginais: Jogo[] = [];
   jogos: Jogo[] = [];
   userId: string | null = null;
+  termoBusca: string = '';
 
   constructor(
     private jogoService: JogoService,
     private participanteService: ParticipanteService,
     private router: Router,
-    private authService: FirebaseAuthService
+    private authService: FirebaseAuthService,
+    private datePipe: DatePipe
   ) { }
 
   ngOnInit(): void {
@@ -35,7 +40,25 @@ export class JogosComponent implements OnInit {
         this.participanteService.listarPorJogo(j.id!).subscribe(ps => j.participantes = ps);
         this.participanteService.listarListaDeEspera(j.id!).subscribe(lista => j.listaDeEspera = lista);
       });
+      this.jogosOriginais = jogos;
       this.jogos = jogos;
+    });
+  }
+
+  aplicarFiltros() {
+    const termo = this.termoBusca.toLowerCase();
+
+    if (!termo) {
+      this.jogos = this.jogosOriginais;
+      return;
+    }
+
+    this.jogos = this.jogosOriginais.filter(jogo => {
+      const localCorresponde = jogo.local.toLowerCase().includes(termo);
+      const dataFormatada = this.datePipe.transform(jogo.data, 'dd/MM/yyyy') || '';
+      const dataCorresponde = dataFormatada.includes(termo);
+      
+      return localCorresponde || dataCorresponde;
     });
   }
 
