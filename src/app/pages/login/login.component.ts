@@ -16,22 +16,21 @@ export class LoginComponent {
   password = '';
   error = '';
 
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(private auth: AuthService, private router: Router) { }
 
   async login() {
-  try {
-    await this.auth.login(this.username, this.password);
-  } catch (err) {
-    this.error = 'Usuário ou senha inválidos';
+    try {
+      await this.auth.login(this.username, this.password);
+    } catch (err) {
+      this.error = 'Usuário ou senha inválidos';
+    }
   }
-}
 
   async ngOnInit() {
-  const autenticado = await this.auth.isAuthenticated();
-  if (autenticado) {
-    this.router.navigate(['/jogos']);
+    const autenticado = await this.auth.isAuthenticated();
+    if (autenticado) {
+      this.router.navigate(['/jogos']);
+    }
   }
-}
-
 }
 

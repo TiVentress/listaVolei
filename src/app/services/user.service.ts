@@ -14,9 +14,8 @@ export interface AppUser {
 export class UserService {
   constructor(private firestore: Firestore) { }
 
-  // Salva ou atualiza os dados de um usuário na coleção 'users'
   saveUser(user: AppUser) {
     const userRef = doc(this.firestore, `users/${user.uid}`);
-    return setDoc(userRef, user, { merge: true }); // 'merge: true' evita sobrescrever dados existentes
+    return setDoc(userRef, user, { merge: true });
   }
 }

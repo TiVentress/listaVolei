@@ -1,46 +1,28 @@
 <div class="container mt-4" style="max-width: 350px;">
   <h2 class="text-center mb-4">Participantes</h2>
   <div class="input-group mb-3">
-    <input 
-      [(ngModel)]="nome" 
-      placeholder="Nome do participante" 
-      class="form-control form-control-sm"
-    />
+    <input [(ngModel)]="nome" placeholder="Nome do participante" class="form-control form-control-sm" />
     <button class="btn btn-success btn-sm" (click)="adicionar()">Adicionar</button>
   </div>
   <div class="input-group mb-4">
-    <input 
-      [(ngModel)]="filtroNome" 
-      placeholder="Buscar por nome"
-      class="form-control form-control-sm"
-    />
+    <input [(ngModel)]="filtroNome" placeholder="Buscar por nome" class="form-control form-control-sm" />
   </div>
 </div>
 <div class="container" style="max-width: 600px;">
   <ul class="list-group">
-    <li 
-      *ngFor="let p of participantesFiltrados"
-      class="list-group-item d-flex justify-content-between align-items-center"
-    >
+    <li *ngFor="let p of participantesFiltrados"
+      class="list-group-item d-flex justify-content-between align-items-center">
       <div class="me-2">
         <span>{{ p.nome }}</span> —
-        <!-- CORREÇÃO APLICADA ABAIXO -->
         <strong class="text-{{ p.presencaConfirmada ? 'success' : 'secondary' }}">
           {{ p.presencaConfirmada ? 'Confirmado' : 'Não Confirmado' }}
         </strong>
       </div>
       <div class="text-nowrap">
-        <button 
-          class="btn btn-outline-primary btn-sm me-1"
-          (click)="alternarConfirmacao(p)"
-        >
-          <!-- CORREÇÃO APLICADA ABAIXO -->
+        <button class="btn btn-outline-primary btn-sm me-1" (click)="alternarConfirmacao(p)">
           {{ p.presencaConfirmada ? 'Desconfirmar' : 'Confirmar' }}
         </button>
-        <button 
-          class="btn btn-outline-danger btn-sm"
-          (click)="remover(p.id!)"
-        >
+        <button class="btn btn-outline-danger btn-sm" (click)="remover(p.id!)">
           Remover
         </button>
       </div>

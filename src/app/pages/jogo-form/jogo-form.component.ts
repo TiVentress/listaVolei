@@ -6,7 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { JogoService } from '../../services/jogo.service';
 import { UploadService } from '../../services/upload.service';
 import { Jogo } from '../../models/jogo.model';
-import { FirebaseAuthService } from '../../services/firebase-auth.service'; // 1. IMPORTAR O SERVIÇO DE AUTENTICAÇÃO
+import { FirebaseAuthService } from '../../services/firebase-auth.service';
 
 @Component({
   selector: 'app-jogo-form',
@@ -34,7 +34,7 @@ export class JogoFormComponent {
     private router: Router,
     private jogoService: JogoService,
     private uploadSrv: UploadService,
-    private authService: FirebaseAuthService // 2. INJETAR O SERVIÇO NO CONSTRUTOR
+    private authService: FirebaseAuthService
   ) {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
@@ -57,14 +57,11 @@ export class JogoFormComponent {
         this.jogo.imagemUrl = await this.uploadSrv.enviarImagem(this.arquivoSelecionado);
       }
 
-      // 3. LÓGICA PARA ADICIONAR O DONO DO JOGO
-      // Se NÃO estiver editando, é um jogo novo.
       if (!this.editando) {
         const currentUser = this.authService.auth.currentUser;
         if (currentUser) {
-          this.jogo.creatorId = currentUser.uid; // Define o ID do usuário logado
+          this.jogo.creatorId = currentUser.uid;
         } else {
-          // Impede o salvamento se, por algum motivo, não houver usuário logado
           alert('Você precisa estar logado para criar um jogo.');
           return;
         }
@@ -74,7 +71,6 @@ export class JogoFormComponent {
         await this.jogoService.editar(this.idEditando, this.jogo);
       } else {
         this.jogo.status = 'Aberto';
-        // O método 'adicionar' agora envia o objeto 'jogo' que já contém o creatorId
         await this.jogoService.adicionar(this.jogo as Omit<Jogo, 'id'>);
       }
 

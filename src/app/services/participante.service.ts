@@ -19,8 +19,6 @@ export class ParticipanteService {
 
   constructor(private firestore: Firestore) {}
 
-  // --- MÉTODOS EXISTENTES PARA PARTICIPANTES CONFIRMADOS ---
-
   private getParticipantesRef(jogoId: string): CollectionReference<DocumentData> {
     return collection(this.firestore, `jogos/${jogoId}/participantes`);
   }
@@ -60,33 +58,20 @@ export class ParticipanteService {
     return deleteDoc(pDoc);
   }
 
-  // ===============================================================
-  // NOVOS MÉTODOS PARA A LISTA DE ESPERA
-  // ===============================================================
-
   private getListaDeEsperaRef(jogoId: string): CollectionReference<DocumentData> {
     return collection(this.firestore, `jogos/${jogoId}/listaDeEspera`);
   }
 
-  /**
-   * Lista todos os usuários na lista de espera de um jogo.
-   */
   listarListaDeEspera(jogoId: string): Observable<Participante[]> {
     const listaDeEsperaRef = this.getListaDeEsperaRef(jogoId);
     return collectionData(listaDeEsperaRef, { idField: 'id' }) as Observable<Participante[]>;
   }
 
-  /**
-   * Adiciona o usuário logado à lista de espera de um jogo.
-   */
   entrarNaListaDeEspera(jogoId: string, participante: Participante) {
     const pDoc = doc(this.firestore, `jogos/${jogoId}/listaDeEspera/${participante.id}`);
     return setDoc(pDoc, participante);
   }
 
-  /**
-   * Remove o usuário logado da lista de espera de um jogo.
-   */
   sairDaListaDeEspera(jogoId: string, participanteId: string) {
     const pDoc = doc(this.firestore, `jogos/${jogoId}/listaDeEspera/${participanteId}`);
     return deleteDoc(pDoc);

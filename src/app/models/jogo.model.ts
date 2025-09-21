@@ -1,6 +1,4 @@
 import { Participante } from './participante.model';
-
-// src/app/models/jogo.model.ts
 export interface Jogo {
   id?: string;
   data: string;
@@ -14,4 +12,3 @@ export interface Jogo {
   descricao?: string;
   listaDeEspera?: Participante[];
 }
-

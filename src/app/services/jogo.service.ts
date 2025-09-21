@@ -9,9 +9,9 @@ import {
   updateDoc,
   deleteDoc,
   CollectionReference,
-  query,    // 1. IMPORTAR 'query'
-  where,    // 2. IMPORTAR 'where'
-  orderBy   // 3. IMPORTAR 'orderBy'
+  query,
+  where,
+  orderBy
 } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { Jogo } from '../models/jogo.model';
@@ -24,26 +24,17 @@ export class JogoService {
     this.jogosRef = collection(this.firestore, 'jogos');
   }
 
-  /**
-   * Lista apenas os jogos agendados para hoje ou datas futuras.
-   * Os jogos são ordenados pela data, do mais próximo ao mais distante.
-   */
   listar(): Observable<Jogo[]> {
-    // 4. PREPARA A DATA DE HOJE PARA A CONSULTA
-    // Pega a data atual e formata para 'YYYY-MM-DD' para comparar com o banco
     const hoje = new Date();
-    // Zera a hora, minuto, segundo para garantir que a comparação pegue o dia inteiro
-    hoje.setHours(0, 0, 0, 0); 
+    hoje.setHours(0, 0, 0, 0);
     const hojeString = hoje.toISOString().split('T')[0];
 
-    // 5. CRIA A CONSULTA (QUERY) FILTRADA E ORDENADA
     const q = query(
       this.jogosRef,
-      where('data', '>=', hojeString), // Filtro: data do jogo deve ser maior ou igual a hoje
-      orderBy('data', 'asc')             // Ordenação: da data mais próxima para a mais distante
+      where('data', '>=', hojeString),
+      orderBy('data', 'asc')
     );
 
-    // 6. EXECUTA A CONSULTA FILTRADA
     return collectionData(q, { idField: 'id' }) as Observable<Jogo[]>;
   }
 

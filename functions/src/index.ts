@@ -23,11 +23,10 @@ export const atualizaStatusJogo = onDocumentWritten(
         return;
       }
 
-      // --- LÓGICA DE CONTAGEM CORRETA ---
       const participantesRef = jogoRef.collection("participantes");
       const participantesSnapshot = await participantesRef.get();
       
-      const numParticipantes = participantesSnapshot.size; // CONTAGEM TOTAL
+      const numParticipantes = participantesSnapshot.size;
       const maxParticipantes = dadosJogo.maxParticipantes;
 
       logger.info(`Vagas Ocupadas: ${numParticipantes} / Máximo: ${maxParticipantes}`);
