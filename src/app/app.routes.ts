@@ -19,6 +19,11 @@ export const routes: Routes = [
     path: 'quem-somos', 
     loadComponent: () => import('./pages/quem-somos/quem-somos.component').then(m => m.QuemSomosComponent)
   },
+  {
+    path: 'perfil',
+    loadComponent: () => import('./pages/perfil/perfil.component').then(m => m.PerfilComponent),
+    canActivate: [authGuard]
+  },
   { path: 'participantes/novo', component: ParticipanteFormComponent, canActivate: [authGuard] },
   { path: 'participantes/editar/:id', component: ParticipanteFormComponent, canActivate: [authGuard] },
   { path: '**', component: NotFoundComponent }
