@@ -2,11 +2,11 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-
 import { JogoService } from '../../services/jogo.service';
 import { UploadService } from '../../services/upload.service';
 import { Jogo } from '../../models/jogo.model';
-import { FirebaseAuthService } from '../../services/firebase-auth.service';
+import { AuthService } from '../../services/auth.service';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-jogo-form',
@@ -34,7 +34,8 @@ export class JogoFormComponent {
     private router: Router,
     private jogoService: JogoService,
     private uploadSrv: UploadService,
-    private authService: FirebaseAuthService
+    private authService: AuthService, 
+    private notificationService: NotificationService
   ) {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
@@ -58,11 +59,11 @@ export class JogoFormComponent {
       }
 
       if (!this.editando) {
-        const currentUser = this.authService.auth.currentUser;
+        const currentUser = await this.authService.getCurrentUser();
         if (currentUser) {
           this.jogo.creatorId = currentUser.uid;
         } else {
-          alert('Você precisa estar logado para criar um jogo.');
+          this.notificationService.showError('Você precisa estar logado para criar um jogo.');
           return;
         }
       }
@@ -73,12 +74,13 @@ export class JogoFormComponent {
         this.jogo.status = 'Aberto';
         await this.jogoService.adicionar(this.jogo as Omit<Jogo, 'id'>);
       }
-
+      
+      this.notificationService.showSuccess('Jogo salvo com sucesso!');
       this.router.navigate(['/jogos']);
 
     } catch (e) {
       console.error('Falha ao salvar:', e);
-      alert('Erro ao salvar (veja console).');
+      this.notificationService.showError('Ocorreu um erro ao salvar o jogo.');
     }
   }
 

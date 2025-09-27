@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { UserService, AppUser } from '../../services/user.service';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-perfil',
@@ -16,6 +17,7 @@ export class PerfilComponent implements OnInit {
   private authService = inject(AuthService);
   private userService = inject(UserService);
   private cdr = inject(ChangeDetectorRef); 
+  private notificationService = inject(NotificationService);
 
   perfilForm!: FormGroup;
   currentUserUid: string | null = null;
@@ -63,10 +65,10 @@ export class PerfilComponent implements OnInit {
 
     try {
       await this.userService.updateUserProfile(this.currentUserUid!, formData);
-      alert('Perfil atualizado com sucesso!');
+      this.notificationService.showSuccess('Perfil atualizado com sucesso!');
     } catch (error) {
       console.error("ERRO ao atualizar o perfil:", error);
-      alert('Ocorreu um erro ao atualizar o perfil. Verifique o console.');
+      this.notificationService.showError('Ocorreu um erro ao atualizar o perfil.')
     }
   }
 }

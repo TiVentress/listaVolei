@@ -9,6 +9,7 @@ import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
 import { Participante } from '../../models/participante.model';
 import { User } from '@angular/fire/auth';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-jogos',
@@ -27,8 +28,9 @@ export class JogosComponent implements OnInit {
     private jogoService: JogoService,
     private participanteService: ParticipanteService,
     private router: Router,
-    private authService: AuthService, 
+    private authService: AuthService,
     private userService: UserService,
+    private notificationService: NotificationService,
     private datePipe: DatePipe
   ) { }
 
@@ -64,23 +66,27 @@ export class JogosComponent implements OnInit {
     });
   }
 
-  novo() {
-    this.router.navigate(['/jogos/novo']);
-  }
+  novo() { this.router.navigate(['/jogos/novo']); }
+  editar(id: string) { this.router.navigate(['/jogos/editar', id]); }
 
-  editar(id: string) {
-    this.router.navigate(['/jogos/editar', id]);
-  }
-
-  remover(id: string) {
-    if (confirm('Deseja remover este jogo?')) {
-      this.jogoService.remover(id);
+  async remover(id: string) {
+    const confirmou = await this.notificationService.showConfirmation(
+      'Você tem certeza?',
+      'Esta ação não pode ser desfeita!',
+      'Sim, quero remover'
+    );
+    if (confirmou) {
+      try {
+        await this.jogoService.remover(id);
+        this.notificationService.showSuccess('Jogo removido com sucesso!');
+      } catch (error) {
+        this.notificationService.showError('Ocorreu um erro ao remover o jogo.');
+        console.error("Erro ao remover o jogo:", error);
+      }
     }
   }
 
-  logout() {
-    this.authService.logout();
-  }
+  logout() { this.authService.logout(); }
 
   isParticipante(jogo: Jogo): boolean {
     if (!this.currentUser || !jogo.participantes) { return false; }
@@ -88,24 +94,32 @@ export class JogosComponent implements OnInit {
   }
 
   async entrarNoJogo(jogo: Jogo) {
-    if (!this.currentUser) { alert("Erro: Não foi possível identificar o usuário."); return; }
-    if (jogo.participantes && jogo.participantes.length >= jogo.maxParticipantes) { alert("Desculpe, este jogo já está lotado."); return; }
+    if (!this.currentUser) { this.notificationService.showError("Você precisa estar logado para realizar esta ação."); return; }
+    if (jogo.participantes && jogo.participantes.length >= jogo.maxParticipantes) { this.notificationService.showError("Desculpe, este jogo já está lotado."); return; }
     try {
       const userProfile = await this.userService.getUserProfile(this.currentUser.uid);
-      if (!userProfile.exists()) { alert("Erro: Perfil de usuário não encontrado."); return; }
+      if (!userProfile.exists()) { this.notificationService.showError("Erro: Perfil de usuário não encontrado."); return; }
+      
       const nomeAtualizado = userProfile.data()['nome'];
       const novoParticipante: Participante = { id: this.currentUser.uid, nome: nomeAtualizado, presencaConfirmada: false };
+      
       await this.participanteService.inscreverUsuario(jogo.id!, novoParticipante);
+      this.notificationService.showSuccess('Inscrição confirmada!');
     } catch (err) {
       console.error("Erro ao se inscrever no jogo:", err);
-      alert('Ocorreu um erro ao se inscrever no jogo.');
+      this.notificationService.showError('Ocorreu um erro ao se inscrever no jogo.');
     }
   }
 
-  sairDoJogo(jogo: Jogo) {
-    if (!this.currentUser) { alert("Erro: Não foi possível identificar o usuário."); return; }
-    this.participanteService.cancelarInscricao(jogo.id!, this.currentUser.uid)
-      .catch(err => console.error("Erro ao cancelar inscrição:", err));
+  async sairDoJogo(jogo: Jogo) {
+    if (!this.currentUser) { this.notificationService.showError("Você precisa estar logado para realizar esta ação."); return; }
+    try {
+      await this.participanteService.cancelarInscricao(jogo.id!, this.currentUser.uid);
+      this.notificationService.showSuccess('Sua inscrição foi cancelada.');
+    } catch (err) {
+      console.error("Erro ao cancelar inscrição:", err);
+      this.notificationService.showError('Ocorreu um erro ao cancelar sua inscrição.');
+    }
   }
 
   isInListaDeEspera(jogo: Jogo): boolean {
@@ -114,22 +128,30 @@ export class JogosComponent implements OnInit {
   }
 
   async entrarNaListaDeEspera(jogo: Jogo) {
-    if (!this.currentUser) { alert("Erro: Não foi possível identificar o usuário."); return; }
+    if (!this.currentUser) { this.notificationService.showError("Você precisa estar logado para realizar esta ação."); return; }
     try {
       const userProfile = await this.userService.getUserProfile(this.currentUser.uid);
-      if (!userProfile.exists()) { alert("Erro: Perfil de usuário não encontrado."); return; }
+      if (!userProfile.exists()) { this.notificationService.showError("Erro: Perfil de usuário não encontrado."); return; }
+      
       const nomeAtualizado = userProfile.data()['nome'];
       const participante: Participante = { id: this.currentUser.uid, nome: nomeAtualizado, presencaConfirmada: false };
+      
       await this.participanteService.entrarNaListaDeEspera(jogo.id!, participante);
+      this.notificationService.showSuccess('Você entrou na lista de espera.');
     } catch (err) {
       console.error("Erro ao entrar na lista de espera:", err);
-      alert('Ocorreu um erro ao entrar na lista de espera.');
+      this.notificationService.showError('Ocorreu um erro ao entrar na lista de espera.');
     }
   }
 
-  sairDaListaDeEspera(jogo: Jogo) {
-    if (!this.currentUser) { alert("Erro: Não foi possível identificar o usuário."); return; }
-    this.participanteService.sairDaListaDeEspera(jogo.id!, this.currentUser.uid)
-      .catch(err => console.error("Erro ao sair da lista de espera:", err));
+  async sairDaListaDeEspera(jogo: Jogo) {
+    if (!this.currentUser) { this.notificationService.showError("Você precisa estar logado para realizar esta ação."); return; }
+    try {
+      await this.participanteService.sairDaListaDeEspera(jogo.id!, this.currentUser.uid);
+      this.notificationService.showSuccess('Você saiu da lista de espera.');
+    } catch (err) {
+      console.error("Erro ao sair da lista de espera:", err);
+      this.notificationService.showError('Ocorreu um erro ao sair da lista de espera.');
+    }
   }
 }
