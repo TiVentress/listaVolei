@@ -4,6 +4,8 @@ export interface Jogo {
   data: string;
   hora: string;
   local: string;
+  endereco?: string;
+  tipo?: 'Quadra' | 'Areia';
   imagemUrl?: string;
   maxParticipantes: number;
   status: 'Aberto' | 'Lotado' | 'Cancelado';
