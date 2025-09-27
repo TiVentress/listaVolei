@@ -56,24 +56,24 @@
           </button>
         </ng-container>
 
-        <ng-container *ngIf="jogo.participantes && jogo.participantes.length < jogo.maxParticipantes">
-          <button *ngIf="!isParticipante(jogo)" class="btn btn-success btn-sm ms-2" (click)="entrarNoJogo(jogo)">
-            Entrar no Jogo
-          </button>
-          <button *ngIf="isParticipante(jogo)" class="btn btn-warning btn-sm ms-2" (click)="sairDoJogo(jogo)">
-            Sair do Jogo
-          </button>
-        </ng-container>
-
-        <ng-container *ngIf="jogo.participantes && jogo.participantes.length >= jogo.maxParticipantes">
-          <button *ngIf="!isParticipante(jogo) && !isInListaDeEspera(jogo)" class="btn btn-primary btn-sm ms-2"
-            (click)="entrarNaListaDeEspera(jogo)">
-            Entrar na Lista de Espera
-          </button>
-          <button *ngIf="isInListaDeEspera(jogo)" class="btn btn-secondary btn-sm ms-2"
-            (click)="sairDaListaDeEspera(jogo)">
-            Sair da Lista de Espera
-          </button>
+        <button *ngIf="isParticipante(jogo)" class="btn btn-warning btn-sm ms-2" (click)="sairDoJogo(jogo)">
+          Sair do Jogo
+        </button>
+      
+        <ng-container *ngIf="!isParticipante(jogo)">
+          <ng-container *ngIf="jogo.participantes && jogo.participantes.length < jogo.maxParticipantes">
+            <button class="btn btn-success btn-sm ms-2" (click)="entrarNoJogo(jogo)">
+              Entrar no Jogo
+            </button>
+          </ng-container>
+          <ng-container *ngIf="jogo.participantes && jogo.participantes.length >= jogo.maxParticipantes">
+            <button *ngIf="!isInListaDeEspera(jogo)" class="btn btn-primary btn-sm ms-2" (click)="entrarNaListaDeEspera(jogo)">
+              Entrar na Lista de Espera
+            </button>
+            <button *ngIf="isInListaDeEspera(jogo)" class="btn btn-secondary btn-sm ms-2" (click)="sairDaListaDeEspera(jogo)">
+              Sair da Lista de Espera
+            </button>
+          </ng-container>
         </ng-container>
       </div>
       
