@@ -11,7 +11,8 @@ import {
   CollectionReference,
   query,
   where,
-  orderBy
+  orderBy,
+  getDocs
 } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { Jogo } from '../models/jogo.model';
@@ -55,5 +56,11 @@ export class JogoService {
   remover(id: string) {
     const jogoDoc = doc(this.firestore, `jogos/${id}`);
     return deleteDoc(jogoDoc);
+  }
+
+  listarPorCriador(creatorId: string): Observable<Jogo[]> {
+    const q = query(this.jogosRef, where('creatorId', '==', creatorId));
+    
+    return collectionData(q, { idField: 'id' }) as Observable<Jogo[]>;
   }
 }

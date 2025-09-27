@@ -1,0 +1,42 @@
+<div class="container mt-4">
+  <h2 class="text-center mb-4">Meus Jogos</h2>
+
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+      <h5 class="mb-0">Jogos que eu criei</h5>
+    </div>
+    <div class="card-body">
+      <div *ngIf="isLoading" class="text-center">
+        <div class="spinner-border" role="status">
+          <span class="visually-hidden">Carregando...</span>
+        </div>
+      </div>
+
+      <div *ngIf="!isLoading && jogosCriados.length === 0" class="alert alert-info">
+        Você ainda não criou nenhum jogo. Que tal <a routerLink="/jogos/novo">criar um agora</a>?
+      </div>
+
+      <ul *ngIf="!isLoading && jogosCriados.length > 0" class="list-group list-group-flush">
+        <li *ngFor="let jogo of jogosCriados" class="list-group-item d-flex justify-content-between align-items-center">
+          <div>
+            <h6 class="mb-0">{{ jogo.local }}</h6>
+            <small class="text-muted">{{ jogo.data | date:'dd/MM/yyyy' }} - {{ jogo.status }}</small>
+          </div>
+          
+          <div class="d-flex gap-2">
+            <a [routerLink]="['/jogos']" [fragment]="'jogo-' + jogo.id" class="btn btn-sm btn-outline-success">
+              Ver
+            </a>
+            <a [routerLink]="['/jogos/editar', jogo.id]" class="btn btn-sm btn-outline-primary">
+              Editar
+            </a>
+            <a [routerLink]="['/jogos', jogo.id, 'participantes']" class="btn btn-sm btn-outline-secondary">
+              Gerenciar
+            </a>
+          </div>
+
+        </li>
+      </ul>
+    </div>
+  </div>
+  </div>

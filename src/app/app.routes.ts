@@ -24,6 +24,16 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/perfil/perfil.component').then(m => m.PerfilComponent),
     canActivate: [authGuard]
   },
+  {
+    path: 'meus-jogos',
+    loadComponent: () => import('./pages/meus-jogos/meus-jogos.component').then(m => m.MeusJogosComponent),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'historico',
+    loadComponent: () => import('./pages/historico/historico.component').then(m => m.HistoricoComponent),
+    canActivate: [authGuard]
+  },
   { path: 'participantes/novo', component: ParticipanteFormComponent, canActivate: [authGuard] },
   { path: 'participantes/editar/:id', component: ParticipanteFormComponent, canActivate: [authGuard] },
   { path: '**', component: NotFoundComponent }

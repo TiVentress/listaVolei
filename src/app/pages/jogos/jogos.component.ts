@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
+import { CommonModule, DatePipe, ViewportScroller } from '@angular/common';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { JogoService } from '../../services/jogo.service';
 import { ParticipanteService } from '../../services/participante.service';
@@ -10,6 +10,7 @@ import { UserService } from '../../services/user.service';
 import { Participante } from '../../models/participante.model';
 import { User } from '@angular/fire/auth';
 import { NotificationService } from '../../services/notification.service';
+import { first } from 'rxjs';
 
 @Component({
   selector: 'app-jogos',
@@ -31,7 +32,9 @@ export class JogosComponent implements OnInit {
     private authService: AuthService,
     private userService: UserService,
     private notificationService: NotificationService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private route: ActivatedRoute, 
+    private viewportScroller: ViewportScroller
   ) { }
 
   ngOnInit(): void {
@@ -42,15 +45,25 @@ export class JogosComponent implements OnInit {
   }
 
   private carregar() {
-    this.jogoService.listar().subscribe(jogos => {
-      jogos.forEach(j => {
-        this.participanteService.listarPorJogo(j.id!).subscribe(ps => j.participantes = ps);
-        this.participanteService.listarListaDeEspera(j.id!).subscribe(lista => j.listaDeEspera = lista);
-      });
-      this.jogosOriginais = jogos;
-      this.jogos = jogos;
+  this.jogoService.listar().subscribe(jogos => {
+    // Seu código original para carregar os participantes
+    jogos.forEach(j => {
+      this.participanteService.listarPorJogo(j.id!).subscribe(ps => j.participantes = ps);
+      this.participanteService.listarListaDeEspera(j.id!).subscribe(lista => j.listaDeEspera = lista);
     });
-  }
+    this.jogosOriginais = jogos;
+    this.jogos = jogos;
+
+    // --- NOVA LÓGICA DE ROLAGEM ADICIONADA AQUI ---
+    // Após os jogos serem carregados, verificamos se há um "fragmento" na URL
+    this.route.fragment.pipe(first()).subscribe(fragment => {
+      if (fragment) {
+        // Usamos um pequeno timeout para garantir que o *ngFor terminou de renderizar na tela
+        setTimeout(() => this.viewportScroller.scrollToAnchor(fragment), 100);
+      }
+    });
+  });
+}
 
   aplicarFiltros() {
     const termo = this.termoBusca.toLowerCase();

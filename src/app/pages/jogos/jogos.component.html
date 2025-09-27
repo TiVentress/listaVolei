@@ -13,6 +13,7 @@
   </div>
 
   <div *ngFor="let jogo of jogos"
+    [id]="'jogo-' + jogo.id"
     class="card mb-4 shadow-sm w-50 mx-auto border border-primary-subtle rounded-4 shadow p-3">
     <img *ngIf="jogo.imagemUrl" [src]="jogo.imagemUrl" class="card-img-top rounded mb-3"
       alt="Foto do jogo em {{ jogo.local }}" style="height: 200px; width: 100%; object-fit: cover;">
