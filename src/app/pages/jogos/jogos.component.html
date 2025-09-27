@@ -46,6 +46,7 @@
           {{ jogo.status }}
         </span>
       </div>
+
       <div class="mb-3 text-center">
         <ng-container *ngIf="currentUser && jogo.creatorId === currentUser.uid">
           <button class="btn btn-primary btn-sm me-2" (click)="editar(jogo.id!)">Editar</button>
@@ -54,27 +55,28 @@
             Participantes
           </button>
         </ng-container>
-        <ng-container *ngIf="currentUser && jogo.creatorId !== currentUser.uid">
-          <ng-container *ngIf="jogo.participantes && jogo.participantes.length < jogo.maxParticipantes">
-            <button *ngIf="!isParticipante(jogo)" class="btn btn-success btn-sm ms-2" (click)="entrarNoJogo(jogo)">
-              Entrar no Jogo
-            </button>
-            <button *ngIf="isParticipante(jogo)" class="btn btn-warning btn-sm ms-2" (click)="sairDoJogo(jogo)">
-              Sair do Jogo
-            </button>
-          </ng-container>
-          <ng-container *ngIf="jogo.participantes && jogo.participantes.length >= jogo.maxParticipantes">
-            <button *ngIf="!isParticipante(jogo) && !isInListaDeEspera(jogo)" class="btn btn-primary btn-sm ms-2"
-              (click)="entrarNaListaDeEspera(jogo)">
-              Entrar na Lista de Espera
-            </button>
-            <button *ngIf="isInListaDeEspera(jogo)" class="btn btn-secondary btn-sm ms-2"
-              (click)="sairDaListaDeEspera(jogo)">
-              Sair da Lista de Espera
-            </button>
-          </ng-container>
+
+        <ng-container *ngIf="jogo.participantes && jogo.participantes.length < jogo.maxParticipantes">
+          <button *ngIf="!isParticipante(jogo)" class="btn btn-success btn-sm ms-2" (click)="entrarNoJogo(jogo)">
+            Entrar no Jogo
+          </button>
+          <button *ngIf="isParticipante(jogo)" class="btn btn-warning btn-sm ms-2" (click)="sairDoJogo(jogo)">
+            Sair do Jogo
+          </button>
+        </ng-container>
+
+        <ng-container *ngIf="jogo.participantes && jogo.participantes.length >= jogo.maxParticipantes">
+          <button *ngIf="!isParticipante(jogo) && !isInListaDeEspera(jogo)" class="btn btn-primary btn-sm ms-2"
+            (click)="entrarNaListaDeEspera(jogo)">
+            Entrar na Lista de Espera
+          </button>
+          <button *ngIf="isInListaDeEspera(jogo)" class="btn btn-secondary btn-sm ms-2"
+            (click)="sairDaListaDeEspera(jogo)">
+            Sair da Lista de Espera
+          </button>
         </ng-container>
       </div>
+      
       <div class="text-center">
         <div *ngIf="jogo.participantes && jogo.participantes.length > 0">
           <strong>Participantes:</strong>
