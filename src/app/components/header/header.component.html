@@ -1,13 +1,21 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
-    <a class="navbar-brand" routerLink="/jogos">ListaVolei</a>
+
+    <a *ngIf="isLoggedIn" class="navbar-brand" routerLink="/jogos">ListaVolei</a>
+
+    <a *ngIf="!isLoggedIn" class="navbar-brand" routerLink="/login">ListaVolei</a>
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav me-auto" *ngIf="isLoggedIn">
-        <li class="nav-item">
+
+      <ul class="navbar-nav me-auto">
+        <li *ngIf="isLoggedIn" class="nav-item">
           <a class="nav-link" routerLink="/jogos">Jogos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/quem-somos">Quem Somos</a>
         </li>
       </ul>
 
@@ -19,6 +27,8 @@
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
               <li><a class="dropdown-item" routerLink="/perfil">Meu Perfil</a></li>
+              <li><a class="dropdown-item" routerLink="/meus-jogos">Meus Jogos</a></li>
+              <li><a class="dropdown-item" routerLink="/historico">Histórico de Jogos</a></li>
               <li><hr class="dropdown-divider"></li>
               <li><a class="dropdown-item" (click)="logout()" style="cursor: pointer;">Sair</a></li>
             </ul>
@@ -30,7 +40,7 @@
             <a class="nav-link" routerLink="/login">Login</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" routerLink="/register">Registrar-se</a>
+            <a class="nav-link" routerLink="/register">Registre-se</a>
           </li>
         </ng-container>
       </ul>
