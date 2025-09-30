@@ -11,6 +11,8 @@ import { Participante } from '../../models/participante.model';
 import { User } from '@angular/fire/auth';
 import { NotificationService } from '../../services/notification.service';
 import { first } from 'rxjs';
+// NOVO: Importações necessárias do Firestore para atualizar o documento do jogo
+import { Firestore, doc, updateDoc, arrayUnion, arrayRemove } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-jogos',
@@ -33,8 +35,9 @@ export class JogosComponent implements OnInit {
     private userService: UserService,
     private notificationService: NotificationService,
     private datePipe: DatePipe,
-    private route: ActivatedRoute, 
-    private viewportScroller: ViewportScroller
+    private route: ActivatedRoute,
+    private viewportScroller: ViewportScroller,
+    private firestore: Firestore // NOVO: Injeção do serviço Firestore
   ) { }
 
   ngOnInit(): void {
@@ -45,25 +48,21 @@ export class JogosComponent implements OnInit {
   }
 
   private carregar() {
-  this.jogoService.listar().subscribe(jogos => {
-    // Seu código original para carregar os participantes
-    jogos.forEach(j => {
-      this.participanteService.listarPorJogo(j.id!).subscribe(ps => j.participantes = ps);
-      this.participanteService.listarListaDeEspera(j.id!).subscribe(lista => j.listaDeEspera = lista);
-    });
-    this.jogosOriginais = jogos;
-    this.jogos = jogos;
+    this.jogoService.listar().subscribe(jogos => {
+      jogos.forEach(j => {
+        this.participanteService.listarPorJogo(j.id!).subscribe(ps => j.participantes = ps);
+        this.participanteService.listarListaDeEspera(j.id!).subscribe(lista => j.listaDeEspera = lista);
+      });
+      this.jogosOriginais = jogos;
+      this.jogos = jogos;
 
-    // --- NOVA LÓGICA DE ROLAGEM ADICIONADA AQUI ---
-    // Após os jogos serem carregados, verificamos se há um "fragmento" na URL
-    this.route.fragment.pipe(first()).subscribe(fragment => {
-      if (fragment) {
-        // Usamos um pequeno timeout para garantir que o *ngFor terminou de renderizar na tela
-        setTimeout(() => this.viewportScroller.scrollToAnchor(fragment), 100);
-      }
+      this.route.fragment.pipe(first()).subscribe(fragment => {
+        if (fragment) {
+          setTimeout(() => this.viewportScroller.scrollToAnchor(fragment), 100);
+        }
+      });
     });
-  });
-}
+  }
 
   aplicarFiltros() {
     const termo = this.termoBusca.toLowerCase();
@@ -108,15 +107,25 @@ export class JogosComponent implements OnInit {
 
   async entrarNoJogo(jogo: Jogo) {
     if (!this.currentUser) { this.notificationService.showError("Você precisa estar logado para realizar esta ação."); return; }
+    if (!jogo.id) return; // Garante que o jogo tem ID
     if (jogo.participantes && jogo.participantes.length >= jogo.maxParticipantes) { this.notificationService.showError("Desculpe, este jogo já está lotado."); return; }
+    
     try {
       const userProfile = await this.userService.getUserProfile(this.currentUser.uid);
       if (!userProfile.exists()) { this.notificationService.showError("Erro: Perfil de usuário não encontrado."); return; }
-      
+
       const nomeAtualizado = userProfile.data()['nome'];
       const novoParticipante: Participante = { id: this.currentUser.uid, nome: nomeAtualizado, presencaConfirmada: false };
-      
-      await this.participanteService.inscreverUsuario(jogo.id!, novoParticipante);
+
+      // 1. Inscreve o usuário na subcoleção de participantes (lógica existente)
+      await this.participanteService.inscreverUsuario(jogo.id, novoParticipante);
+
+      // 2. NOVO: Atualiza o array 'participantesIds' no documento principal do jogo
+      const jogoRef = doc(this.firestore, 'jogos', jogo.id);
+      await updateDoc(jogoRef, {
+        participantesIds: arrayUnion(this.currentUser.uid)
+      });
+
       this.notificationService.showSuccess('Inscrição confirmada!');
     } catch (err) {
       console.error("Erro ao se inscrever no jogo:", err);
@@ -126,8 +135,18 @@ export class JogosComponent implements OnInit {
 
   async sairDoJogo(jogo: Jogo) {
     if (!this.currentUser) { this.notificationService.showError("Você precisa estar logado para realizar esta ação."); return; }
+    if (!jogo.id) return; // Garante que o jogo tem ID
+
     try {
-      await this.participanteService.cancelarInscricao(jogo.id!, this.currentUser.uid);
+      // 1. Cancela a inscrição na subcoleção de participantes (lógica existente)
+      await this.participanteService.cancelarInscricao(jogo.id, this.currentUser.uid);
+
+      // 2. NOVO: Remove o ID do usuário do array 'participantesIds'
+      const jogoRef = doc(this.firestore, 'jogos', jogo.id);
+      await updateDoc(jogoRef, {
+        participantesIds: arrayRemove(this.currentUser.uid)
+      });
+
       this.notificationService.showSuccess('Sua inscrição foi cancelada.');
     } catch (err) {
       console.error("Erro ao cancelar inscrição:", err);
@@ -145,10 +164,10 @@ export class JogosComponent implements OnInit {
     try {
       const userProfile = await this.userService.getUserProfile(this.currentUser.uid);
       if (!userProfile.exists()) { this.notificationService.showError("Erro: Perfil de usuário não encontrado."); return; }
-      
+
       const nomeAtualizado = userProfile.data()['nome'];
       const participante: Participante = { id: this.currentUser.uid, nome: nomeAtualizado, presencaConfirmada: false };
-      
+
       await this.participanteService.entrarNaListaDeEspera(jogo.id!, participante);
       this.notificationService.showSuccess('Você entrou na lista de espera.');
     } catch (err) {

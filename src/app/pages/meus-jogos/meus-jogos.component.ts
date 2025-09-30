@@ -13,7 +13,9 @@ import { AuthService } from '../../services/auth.service';
 })
 export class MeusJogosComponent implements OnInit {
   jogosCriados: Jogo[] = [];
-  isLoading = true;
+  jogosInscritos: Jogo[] = [];
+  isLoadingCriados = true;
+  isLoadingInscritos = true;
 
   constructor(
     private jogoService: JogoService,
@@ -21,19 +23,28 @@ export class MeusJogosComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.carregarJogosCriados();
+    this.carregarJogos();
   }
 
-  async carregarJogosCriados() {
-    this.isLoading = true;
+  async carregarJogos() {
+    this.isLoadingCriados = true;
+    this.isLoadingInscritos = true;
     const user = await this.authService.getCurrentUser();
     if (user) {
+      // Carrega os jogos criados pelo usuário
       this.jogoService.listarPorCriador(user.uid).subscribe(jogos => {
         this.jogosCriados = jogos;
-        this.isLoading = false;
+        this.isLoadingCriados = false;
+      });
+
+      // Carrega os jogos em que o usuário está inscrito
+      this.jogoService.getJogosInscritos(user.uid).subscribe(jogos => {
+        this.jogosInscritos = jogos;
+        this.isLoadingInscritos = false;
       });
     } else {
-      this.isLoading = false;
+      this.isLoadingCriados = false;
+      this.isLoadingInscritos = false;
     }
   }
 }

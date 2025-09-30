@@ -1,22 +1,22 @@
 <div class="container mt-4">
   <h2 class="text-center mb-4">Meus Jogos</h2>
 
-  <div class="card shadow-sm">
+  <div class="card shadow-sm mb-4">
     <div class="card-header bg-primary text-white">
       <h5 class="mb-0">Jogos que eu criei</h5>
     </div>
     <div class="card-body">
-      <div *ngIf="isLoading" class="text-center">
+      <div *ngIf="isLoadingCriados" class="text-center">
         <div class="spinner-border" role="status">
           <span class="visually-hidden">Carregando...</span>
         </div>
       </div>
 
-      <div *ngIf="!isLoading && jogosCriados.length === 0" class="alert alert-info">
+      <div *ngIf="!isLoadingCriados && jogosCriados.length === 0" class="alert alert-info">
         Você ainda não criou nenhum jogo. Que tal <a routerLink="/jogos/novo">criar um agora</a>?
       </div>
 
-      <ul *ngIf="!isLoading && jogosCriados.length > 0" class="list-group list-group-flush">
+      <ul *ngIf="!isLoadingCriados && jogosCriados.length > 0" class="list-group list-group-flush">
         <li *ngFor="let jogo of jogosCriados" class="list-group-item d-flex justify-content-between align-items-center">
           <div>
             <h6 class="mb-0">{{ jogo.local }}</h6>
@@ -34,9 +34,40 @@
               Gerenciar
             </a>
           </div>
-
         </li>
       </ul>
     </div>
   </div>
+
+  <div class="card shadow-sm">
+    <div class="card-header bg-success text-white">
+      <h5 class="mb-0">Jogos que estou inscrito</h5>
+    </div>
+    <div class="card-body">
+        <div *ngIf="isLoadingInscritos" class="text-center">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Carregando...</span>
+            </div>
+        </div>
+
+        <div *ngIf="!isLoadingInscritos && jogosInscritos.length === 0" class="alert alert-info">
+            Você não está inscrito em nenhum jogo. Veja os <a routerLink="/jogos">jogos disponíveis</a>.
+        </div>
+
+        <ul *ngIf="!isLoadingInscritos && jogosInscritos.length > 0" class="list-group list-group-flush">
+            <li *ngFor="let jogo of jogosInscritos" class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="mb-0">{{ jogo.local }}</h6>
+                    <small class="text-muted">{{ jogo.data | date:'dd/MM/yyyy' }} - {{ jogo.status }}</small>
+                </div>
+                
+                <div class="d-flex gap-2">
+                    <a [routerLink]="['/jogos']" [fragment]="'jogo-' + jogo.id" class="btn btn-sm btn-outline-success">
+                        Ver
+                    </a>
+                </div>
+            </li>
+        </ul>
+    </div>
   </div>
+</div>

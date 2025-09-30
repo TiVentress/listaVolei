@@ -1,4 +1,7 @@
+// src/app/models/jogo.model.ts
+
 import { Participante } from './participante.model';
+
 export interface Jogo {
   id?: string;
   data: string;
@@ -10,6 +13,7 @@ export interface Jogo {
   maxParticipantes: number;
   status: 'Aberto' | 'Lotado' | 'Cancelado';
   participantes?: Participante[];
+  participantesIds?: string[];
   creatorId?: string;
   descricao?: string;
   listaDeEspera?: Participante[];

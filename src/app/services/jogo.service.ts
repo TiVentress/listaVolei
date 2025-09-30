@@ -63,4 +63,11 @@ export class JogoService {
     
     return collectionData(q, { idField: 'id' }) as Observable<Jogo[]>;
   }
+
+  getJogosInscritos(userId: string): Observable<Jogo[]> {
+    const jogosRef = collection(this.firestore, 'jogos');
+    // A consulta agora busca no campo 'participantesIds'
+    const q = query(jogosRef, where('participantesIds', 'array-contains', userId));
+    return collectionData(q, { idField: 'id' }) as Observable<Jogo[]>;
+  }
 }
