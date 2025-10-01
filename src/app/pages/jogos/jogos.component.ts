@@ -182,4 +182,9 @@ export class JogosComponent implements OnInit {
       this.notificationService.showError('Ocorreu um erro ao sair da lista de espera.');
     }
   }
+
+  isJogoPassado(dataJogo: string): boolean {
+    const hoje = new Date().toISOString().split('T')[0];
+    return dataJogo < hoje;
+  }
 }

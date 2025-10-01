@@ -14,23 +14,20 @@
     <button class="btn btn-success" (click)="novo()">Novo Jogo</button>
   </div>
 
-  <!-- NOVO: SPINNER DE CARREGAMENTO -->
-  <!-- Ele aparecerá enquanto os dados estiverem sendo buscados -->
+  <!-- SPINNER DE CARREGAMENTO -->
   <div *ngIf="isLoading" class="d-flex justify-content-center my-5">
     <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
       <span class="visually-hidden">Carregando...</span>
     </div>
   </div>
 
-  <!-- NOVO: *ngIf="!isLoading" para envolver a lista de jogos -->
-  <!-- A lista de jogos e a mensagem de "nenhum jogo" só aparecerão quando o carregamento terminar -->
+  <!-- A lista de jogos só aparece quando o carregamento termina -->
   <div *ngIf="!isLoading">
 
-    <div *ngFor="let jogo of jogos"
-      [id]="'jogo-' + jogo.id"
+    <div *ngFor="let jogo of jogos" [id]="'jogo-' + jogo.id"
       class="card mb-4 shadow-sm w-50 mx-auto border border-primary-subtle rounded-4 shadow p-3">
-      
-      <!-- Todo o seu código do card (imagem, título, botões, etc.) continua aqui dentro, sem nenhuma alteração -->
+
+      <!-- Imagem do Jogo -->
       <img *ngIf="jogo.imagemUrl" [src]="jogo.imagemUrl" class="card-img-top rounded mb-3"
         alt="Foto do jogo em {{ jogo.local }}" style="height: 200px; width: 100%; object-fit: cover;">
       <div *ngIf="!jogo.imagemUrl" class="card-img-top rounded mb-3 d-flex align-items-center justify-content-center"
@@ -42,7 +39,9 @@
             d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z" />
         </svg>
       </div>
+
       <div class="card-body pt-0">
+        <!-- Detalhes do Jogo -->
         <div class="text-center mb-3">
           <h5 class="card-title mb-1"><strong>{{ jogo.local }}</strong></h5>
           <p *ngIf="jogo.endereco" class="card-text text-muted mb-2">{{ jogo.endereco }}</p>
@@ -52,15 +51,28 @@
         <p *ngIf="jogo.descricao" class="card-text text-center text-muted border-bottom pb-3 mb-3">
           {{ jogo.descricao }}
         </p>
+
+        <!-- AQUI ESTÁ A LÓGICA DO STATUS (FINALIZADO / ABERTO / LOTADO) -->
         <div class="text-center mb-3">
-          <span class="badge rounded-pill" [ngClass]="{
-              'bg-success': jogo.status === 'Aberto',
-              'bg-danger': jogo.status === 'Lotado',
-              'bg-secondary': jogo.status === 'Cancelado'
-            }">
-            {{ jogo.status }}
-          </span>
+          <!-- Se o jogo NÃO passou, mostra o status normal -->
+          <ng-container *ngIf="!isJogoPassado(jogo.data)">
+            <span class="badge rounded-pill" [ngClass]="{
+                'bg-success': jogo.status === 'Aberto',
+                'bg-danger': jogo.status === 'Lotado',
+                'bg-secondary': jogo.status === 'Cancelado'
+              }">
+              {{ jogo.status }}
+            </span>
+          </ng-container>
+          <!-- Se o jogo JÁ passou, mostra 'Finalizado' ou 'Cancelado' -->
+          <ng-container *ngIf="isJogoPassado(jogo.data)">
+            <span class="badge rounded-pill" [ngClass]="{'bg-secondary': jogo.status === 'Cancelado', 'bg-info': jogo.status !== 'Cancelado'}">
+              {{ jogo.status === 'Cancelado' ? 'Cancelado' : 'Finalizado' }}
+            </span>
+          </ng-container>
         </div>
+
+        <!-- Botões de Ação -->
         <div class="mb-3 text-center">
           <ng-container *ngIf="currentUser && jogo.creatorId === currentUser.uid">
             <button class="btn btn-primary btn-sm me-2" (click)="editar(jogo.id)">Editar</button>
@@ -90,6 +102,8 @@
             </ng-container>
           </ng-container>
         </div>
+
+        <!-- Listas de Participantes e Espera -->
         <div class="text-center">
           <div *ngIf="jogo.participantes && jogo.participantes.length > 0">
             <strong>Participantes:</strong>
@@ -117,7 +131,7 @@
       </div>
     </div>
 
-    <!-- NOVA: Mensagem para quando não houver jogos agendados -->
+    <!-- Mensagem para quando não houver jogos agendados -->
     <div *ngIf="jogos.length === 0" class="alert alert-light text-center mt-4">
       Nenhum jogo agendado no momento. Que tal <a routerLink="/jogos/novo">criar um</a>?
     </div>

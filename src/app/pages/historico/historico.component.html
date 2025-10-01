@@ -1,3 +1,5 @@
+<!-- Arquivo: src/app/pages/historico/historico.component.html -->
+
 <div class="container mt-4">
   <div class="text-center mb-4">
     <h2 class="display-6">Histórico de Jogos</h2>
@@ -10,7 +12,7 @@
     </div>
   </div>
 
-  <div *ngIf="!isLoading && jogosPassados.length === 0" class="alert alert-info text-center">
+  <div *ngIf="!isLoading && jogosPassados.length === 0" class="alert alert-secondary text-center">
     Ainda não há jogos no seu histórico.
   </div>
 
@@ -22,12 +24,12 @@
           <p class="card-text">
             <small class="text-muted">{{ jogo.data | date:'dd/MM/yyyy' }} às {{ jogo.hora }}</small>
           </p>
+          <!-- AQUI ESTÁ A MUDANÇA -->
           <span class="badge" [ngClass]="{'bg-secondary': jogo.status === 'Cancelado', 'bg-success': jogo.status !== 'Cancelado'}">
-            Finalizado
+            {{ jogo.status === 'Cancelado' ? 'Cancelado' : 'Finalizado' }}
           </span>
         </div>
         <div class="card-footer bg-light">
-          <!-- Este link leva para a página principal, destacando o jogo clicado -->
           <a [routerLink]="['/jogos']" [fragment]="'jogo-' + jogo.id" class="btn btn-sm btn-outline-secondary">
             Ver Detalhes
           </a>
