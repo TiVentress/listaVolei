@@ -70,4 +70,14 @@ export class JogoService {
     const q = query(jogosRef, where('participantesIds', 'array-contains', userId));
     return collectionData(q, { idField: 'id' }) as Observable<Jogo[]>;
   }
+
+  getHistoricoJogos(): Observable<Jogo[]> {
+    const jogosRef = collection(this.firestore, 'jogos');
+    const hoje = new Date().toISOString().split('T')[0]; // Pega a data de hoje no formato AAAA-MM-DD
+
+    // Cria a query: busca jogos onde a data é menor que hoje, ordenado pela data mais recente primeiro
+    const q = query(jogosRef, where('data', '<', hoje), orderBy('data', 'desc'));
+
+    return collectionData(q, { idField: 'id' }) as Observable<Jogo[]>;
+  }
 }
