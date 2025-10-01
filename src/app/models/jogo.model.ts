@@ -3,7 +3,7 @@
 import { Participante } from './participante.model';
 
 export interface Jogo {
-  id?: string;
+  id: string;
   data: string;
   hora: string;
   local: string;

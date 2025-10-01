@@ -1,3 +1,5 @@
+// Arquivo: src/app/pages/jogos/jogos.component.ts
+
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, DatePipe, ViewportScroller } from '@angular/common';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
@@ -11,7 +13,6 @@ import { Participante } from '../../models/participante.model';
 import { User } from '@angular/fire/auth';
 import { NotificationService } from '../../services/notification.service';
 import { first } from 'rxjs';
-// NOVO: Importações necessárias do Firestore para atualizar o documento do jogo
 import { Firestore, doc, updateDoc, arrayUnion, arrayRemove } from '@angular/fire/firestore';
 
 @Component({
@@ -26,18 +27,19 @@ export class JogosComponent implements OnInit {
   jogos: Jogo[] = [];
   currentUser: User | null = null;
   termoBusca: string = '';
+  isLoading = true;
 
   constructor(
     private jogoService: JogoService,
     private participanteService: ParticipanteService,
     private router: Router,
     private authService: AuthService,
-    private userService: UserService,
+    public userService: UserService,
     private notificationService: NotificationService,
     private datePipe: DatePipe,
     private route: ActivatedRoute,
     private viewportScroller: ViewportScroller,
-    private firestore: Firestore // NOVO: Injeção do serviço Firestore
+    private firestore: Firestore
   ) { }
 
   ngOnInit(): void {
@@ -47,53 +49,71 @@ export class JogosComponent implements OnInit {
     this.carregar();
   }
 
+  // MÉTODO CARREGAR COM A LÓGICA FINAL
   private carregar() {
-    this.jogoService.listar().subscribe(jogos => {
-      jogos.forEach(j => {
-        this.participanteService.listarPorJogo(j.id!).subscribe(ps => j.participantes = ps);
-        this.participanteService.listarListaDeEspera(j.id!).subscribe(lista => j.listaDeEspera = lista);
+    this.isLoading = true;
+    this.jogoService.listarTodos().subscribe(todosOsJogos => {
+      todosOsJogos.forEach(j => {
+        this.participanteService.listarPorJogo(j.id).subscribe(ps => j.participantes = ps);
+        this.participanteService.listarListaDeEspera(j.id).subscribe(lista => j.listaDeEspera = lista);
       });
-      this.jogosOriginais = jogos;
-      this.jogos = jogos;
+
+      this.jogosOriginais = todosOsJogos;
+      const hoje = new Date().toISOString().split('T')[0];
+
+      // Por padrão, exibe apenas os jogos futuros.
+      let jogosParaExibir = this.jogosOriginais.filter(j => j.data >= hoje);
 
       this.route.fragment.pipe(first()).subscribe(fragment => {
         if (fragment) {
-          setTimeout(() => this.viewportScroller.scrollToAnchor(fragment), 100);
+          const jogoId = fragment.replace('jogo-', '');
+          const jogoAlvo = this.jogosOriginais.find(j => j.id === jogoId);
+          
+          // AQUI ESTÁ A MÁGICA:
+          // Se o jogo alvo existe, mas não está na lista de exibição (porque é antigo),
+          // nós o adicionamos temporariamente.
+          if (jogoAlvo && !jogosParaExibir.some(j => j.id === jogoId)) {
+            jogosParaExibir.push(jogoAlvo);
+          }
+          
+          setTimeout(() => this.viewportScroller.scrollToAnchor(fragment), 300);
         }
+        
+        // Atribui a lista final (com o possível jogo antigo) à variável de exibição
+        this.jogos = jogosParaExibir;
+        this.isLoading = false;
       });
     });
   }
 
   aplicarFiltros() {
     const termo = this.termoBusca.toLowerCase();
-    if (!termo) {
-      this.jogos = this.jogosOriginais;
-      return;
-    }
-    this.jogos = this.jogosOriginais.filter(jogo => {
-      const localCorresponde = jogo.local.toLowerCase().includes(termo);
-      const dataFormatada = this.datePipe.transform(jogo.data, 'dd/MM/yyyy') || '';
-      const dataCorresponde = dataFormatada.includes(termo);
-      return localCorresponde || dataCorresponde;
-    });
-  }
+    const hoje = new Date().toISOString().split('T')[0];
+    let jogosParaFiltrar = this.jogosOriginais.filter(j => j.data >= hoje);
 
+    if (termo) {
+      jogosParaFiltrar = jogosParaFiltrar.filter(jogo => {
+        const localCorresponde = jogo.local.toLowerCase().includes(termo);
+        const dataFormatada = this.datePipe.transform(jogo.data, 'dd/MM/yyyy') || '';
+        const dataCorresponde = dataFormatada.includes(termo);
+        return localCorresponde || dataCorresponde;
+      });
+    }
+    this.jogos = jogosParaFiltrar;
+  }
+  
+  // O resto do seu componente permanece o mesmo.
   novo() { this.router.navigate(['/jogos/novo']); }
   editar(id: string) { this.router.navigate(['/jogos/editar', id]); }
 
   async remover(id: string) {
-    const confirmou = await this.notificationService.showConfirmation(
-      'Você tem certeza?',
-      'Esta ação não pode ser desfeita!',
-      'Sim, quero remover'
-    );
+    const confirmou = await this.notificationService.showConfirmation('Você tem certeza?','Esta ação não pode ser desfeita!','Sim, quero remover');
     if (confirmou) {
       try {
         await this.jogoService.remover(id);
         this.notificationService.showSuccess('Jogo removido com sucesso!');
       } catch (error) {
         this.notificationService.showError('Ocorreu um erro ao remover o jogo.');
-        console.error("Erro ao remover o jogo:", error);
       }
     }
   }
@@ -106,50 +126,30 @@ export class JogosComponent implements OnInit {
   }
 
   async entrarNoJogo(jogo: Jogo) {
-    if (!this.currentUser) { this.notificationService.showError("Você precisa estar logado para realizar esta ação."); return; }
-    if (!jogo.id) return; // Garante que o jogo tem ID
+    if (!this.currentUser || !jogo.id) { return; }
     if (jogo.participantes && jogo.participantes.length >= jogo.maxParticipantes) { this.notificationService.showError("Desculpe, este jogo já está lotado."); return; }
-    
     try {
       const userProfile = await this.userService.getUserProfile(this.currentUser.uid);
       if (!userProfile.exists()) { this.notificationService.showError("Erro: Perfil de usuário não encontrado."); return; }
-
       const nomeAtualizado = userProfile.data()['nome'];
       const novoParticipante: Participante = { id: this.currentUser.uid, nome: nomeAtualizado, presencaConfirmada: false };
-
-      // 1. Inscreve o usuário na subcoleção de participantes (lógica existente)
       await this.participanteService.inscreverUsuario(jogo.id, novoParticipante);
-
-      // 2. NOVO: Atualiza o array 'participantesIds' no documento principal do jogo
       const jogoRef = doc(this.firestore, 'jogos', jogo.id);
-      await updateDoc(jogoRef, {
-        participantesIds: arrayUnion(this.currentUser.uid)
-      });
-
+      await updateDoc(jogoRef, { participantesIds: arrayUnion(this.currentUser.uid) });
       this.notificationService.showSuccess('Inscrição confirmada!');
     } catch (err) {
-      console.error("Erro ao se inscrever no jogo:", err);
       this.notificationService.showError('Ocorreu um erro ao se inscrever no jogo.');
     }
   }
 
   async sairDoJogo(jogo: Jogo) {
-    if (!this.currentUser) { this.notificationService.showError("Você precisa estar logado para realizar esta ação."); return; }
-    if (!jogo.id) return; // Garante que o jogo tem ID
-
+    if (!this.currentUser || !jogo.id) { return; }
     try {
-      // 1. Cancela a inscrição na subcoleção de participantes (lógica existente)
       await this.participanteService.cancelarInscricao(jogo.id, this.currentUser.uid);
-
-      // 2. NOVO: Remove o ID do usuário do array 'participantesIds'
       const jogoRef = doc(this.firestore, 'jogos', jogo.id);
-      await updateDoc(jogoRef, {
-        participantesIds: arrayRemove(this.currentUser.uid)
-      });
-
+      await updateDoc(jogoRef, { participantesIds: arrayRemove(this.currentUser.uid) });
       this.notificationService.showSuccess('Sua inscrição foi cancelada.');
     } catch (err) {
-      console.error("Erro ao cancelar inscrição:", err);
       this.notificationService.showError('Ocorreu um erro ao cancelar sua inscrição.');
     }
   }
@@ -160,29 +160,25 @@ export class JogosComponent implements OnInit {
   }
 
   async entrarNaListaDeEspera(jogo: Jogo) {
-    if (!this.currentUser) { this.notificationService.showError("Você precisa estar logado para realizar esta ação."); return; }
+    if (!this.currentUser || !jogo.id) { return; }
     try {
       const userProfile = await this.userService.getUserProfile(this.currentUser.uid);
       if (!userProfile.exists()) { this.notificationService.showError("Erro: Perfil de usuário não encontrado."); return; }
-
       const nomeAtualizado = userProfile.data()['nome'];
       const participante: Participante = { id: this.currentUser.uid, nome: nomeAtualizado, presencaConfirmada: false };
-
-      await this.participanteService.entrarNaListaDeEspera(jogo.id!, participante);
+      await this.participanteService.entrarNaListaDeEspera(jogo.id, participante);
       this.notificationService.showSuccess('Você entrou na lista de espera.');
     } catch (err) {
-      console.error("Erro ao entrar na lista de espera:", err);
       this.notificationService.showError('Ocorreu um erro ao entrar na lista de espera.');
     }
   }
 
   async sairDaListaDeEspera(jogo: Jogo) {
-    if (!this.currentUser) { this.notificationService.showError("Você precisa estar logado para realizar esta ação."); return; }
+    if (!this.currentUser || !jogo.id) { return; }
     try {
-      await this.participanteService.sairDaListaDeEspera(jogo.id!, this.currentUser.uid);
+      await this.participanteService.sairDaListaDeEspera(jogo.id, this.currentUser.uid);
       this.notificationService.showSuccess('Você saiu da lista de espera.');
     } catch (err) {
-      console.error("Erro ao sair da lista de espera:", err);
       this.notificationService.showError('Ocorreu um erro ao sair da lista de espera.');
     }
   }
