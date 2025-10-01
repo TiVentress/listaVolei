@@ -1,6 +1,4 @@
-<!-- Arquivo: src/app/components/header/header.component.html -->
-
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm sticky-top">
   <div class="container-fluid">
 
     <a class="navbar-brand fw-bold" routerLink="/">
@@ -10,42 +8,58 @@
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
 
-      <ul class="navbar-nav me-auto">
-        <li class="nav-item" *ngIf="isLoggedIn">
-          <a class="nav-link" routerLink="/jogos" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Jogos</a>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <!-- Links Principais -->
+      <ul class="navbar-nav me-auto w-75 justify-content-between">
+        
+        <!-- AQUI ESTÁ A CORREÇÃO: Adicionado *ngIf="isLoggedIn" -->
+        <li class="nav-item ms-lg-5" *ngIf="isLoggedIn">
+          <a class="nav-link d-flex align-items-center" routerLink="/jogos" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+            <i class="bi bi-calendar-event me-1"></i>Encontre Jogos
+          </a>
         </li>
-        <!-- NOVO LINK ADICIONADO AQUI -->
-        <li class="nav-item" *ngIf="isLoggedIn">
-          <a class="nav-link" routerLink="/historico" routerLinkActive="active">Histórico</a>
+
+        <li class="nav-item ms-lg-5" *ngIf="isLoggedIn">
+          <a class="nav-link d-flex align-items-center" routerLink="/historico" routerLinkActive="active">
+            <i class="bi bi-clock-history me-1"></i>Histórico de jogos
+          </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/quem-somos" routerLinkActive="active">Quem Somos</a>
+         <li class="nav-item ms-lg-5" *ngIf="isLoggedIn">
+          <a class="nav-link d-flex align-items-center" routerLink="/meus-jogos" routerLinkActive="active">
+            <i class="bi bi-trophy-fill me-1"></i>Meus Jogos
+          </a>
+        </li>
+        <li class="nav-item ms-lg-5">
+          <a class="nav-link d-flex align-items-center" routerLink="/quem-somos" routerLinkActive="active">
+            <i class="bi bi-info-circle me-1"></i>Sobre nós
+          </a>
         </li>
       </ul>
 
-      <ul class="navbar-nav">
+      <!-- Ações do Usuário (alinhadas à direita) -->
+      <ul class="navbar-nav align-items-center">
+        <!-- Logado -->
         <ng-container *ngIf="isLoggedIn">
-          <li class="nav-item dropdown">
+          <li class="nav-item dropdown ms-lg-3">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
               Olá, {{ userService.userName$ | async }}
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
-              <li><a class="dropdown-item" routerLink="/perfil">Meu Perfil</a></li>
-              <li><a class="dropdown-item" routerLink="/meus-jogos">Meus Jogos</a></li>
+              <li><a class="dropdown-item d-flex align-items-center" routerLink="/perfil"><i class="bi bi-person-fill me-2"></i>Meu Perfil</a></li>
               <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" (click)="logout()" style="cursor: pointer;">Sair</a></li>
+              <li><a class="dropdown-item d-flex align-items-center text-danger" (click)="logout()" style="cursor: pointer;"><i class="bi bi-box-arrow-right me-2"></i>Sair</a></li>
             </ul>
           </li>
         </ng-container>
 
+        <!-- Deslogado -->
         <ng-container *ngIf="!isLoggedIn">
           <li class="nav-item">
             <a class="nav-link" routerLink="/login">Login</a>
           </li>
           <li class="nav-item ms-lg-2">
-            <a class="btn btn-outline-light btn-sm" routerLink="/register">Registre-se</a>
+            <a class="btn btn-light btn-sm" routerLink="/register">Registre-se Grátis</a>
           </li>
         </ng-container>
       </ul>
