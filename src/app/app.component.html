@@ -1,5 +1,10 @@
+<!-- Ficheiro: src/app/app.component.html -->
+
 <app-header></app-header>
 
-<div class="container mt-4">
+<!-- A MUDANÇA ESTÁ AQUI: -->
+<!-- 1. A classe "flex-grow-1" faz esta secção ocupar todo o espaço vertical. -->
+<!-- 2. O [ngStyle] aplica a cor de fundo "Azul Gelo" diretamente a esta área. -->
+<main class="flex-grow-1" [ngStyle]="{'background-color': '#eef5ff'}">
   <router-outlet></router-outlet>
-</div>
+</main>
