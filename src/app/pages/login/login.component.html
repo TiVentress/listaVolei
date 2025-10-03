@@ -1,22 +1,39 @@
-<div class="container mt-5" style="max-width: 350px;">
-  <h2 class="text-center mb-4">Login Lista Vôlei</h2>
-  <form (ngSubmit)="login()" #form="ngForm">
-    <div class="mb-3">
-      <label for="username" class="form-label">Usuário</label>
-      <input type="text" id="username" name="username" class="form-control" [(ngModel)]="username" required />
-    </div>
-    <div class="mb-3">
-      <label for="password" class="form-label">Senha</label>
-      <input type="password" id="password" name="password" class="form-control" [(ngModel)]="password" required />
-    </div>
-    <div class="text-center">
-      <button type="submit" class="btn btn-primary w-50">Entrar</button>
-    </div>
-    <div class="text-center mt-3">
-      <a routerLink="/register">Não tem conta? Cadastre-se</a>
-    </div>
-    <div *ngIf="error" class="text-center alert alert-danger mt-3" role="alert">
-      {{ error }}
-    </div>
-  </form>
+<div class="login-page-wrapper">
+  <!-- Coluna da Imagem (Esquerda) -->
+  <div class="image-side"></div>
+
+  <!-- Coluna do Formulário (Direita) -->
+  <div class="form-side">
+      <div class="form-container">
+        <div class="text-center mb-4">
+          <a class="navbar-brand fw-bold fs-2 text-primary" routerLink="/">
+            <i class="bi bi-volleyball me-2"></i>ListaVôlei
+          </a>
+          <h1 class="h3 my-3 fw-normal">Acesse sua conta</h1>
+          <p class="text-muted">Use seu e-mail e senha para entrar na plataforma.</p>
+        </div>
+
+        <form (ngSubmit)="login()">
+          <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="email" name="email" [(ngModel)]="credentials.email" placeholder="nome@exemplo.com" required>
+            <label for="email">Endereço de e-mail</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="password" class="form-control" id="password" name="password" [(ngModel)]="credentials.password" placeholder="Senha" required>
+            <label for="password">Senha</label>
+          </div>
+
+          <div *ngIf="error" class="alert alert-danger" role="alert">
+            {{ error }}
+          </div>
+
+          <button class="w-100 btn btn-lg btn-primary mt-4" type="submit">Entrar</button>
+
+          <div class="text-center mt-4">
+            <p class="mb-0 text-muted">Não tem uma conta?</p>
+            <a routerLink="/register" class="fw-bold text-decoration-none">Crie uma agora</a>
+          </div>
+        </form>
+      </div>
+  </div>
 </div>

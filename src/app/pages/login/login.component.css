@@ -1,0 +1,35 @@
+.login-container {
+  height: 100%;
+}
+
+.image-side {
+  height: 100%;
+  background-image: url('https://images.unsplash.com/photo-1594498754737-96123c72b2fb?q=80&w=2070&auto-format&fit=crop');
+  background-size: cover;
+  background-position: center;
+}
+
+.form-container {
+  width: 100%;
+  max-width: 400px;
+  padding: 1rem;
+  margin: 0 auto; /* Garante a centralização horizontal */
+}
+
+/* Em ecrãs pequenos, a imagem desaparece e o formulário fica centralizado */
+@media (max-width: 991.98px) {
+  #form-column {
+    /* Força a coluna a ocupar toda a largura e a centrar o seu conteúdo */
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+  }
+  .form-container {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
+  }
+}
