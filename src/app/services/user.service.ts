@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Firestore, doc, getDoc, setDoc, updateDoc } from '@angular/fire/firestore';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs'; 
 
 export interface AppUser {
   uid: string;
   nome: string;
   email: string;
-  celular: string; 
+  celular: string;
 }
 
 @Injectable({
@@ -16,7 +16,14 @@ export class UserService {
   private userNameSubject = new BehaviorSubject<string | null>(null);
   public userName$ = this.userNameSubject.asObservable();
 
+  private userProfileCreated = new Subject<void>();
+  public userProfileCreated$ = this.userProfileCreated.asObservable();
+
   constructor(private firestore: Firestore) { }
+
+  notifyProfileCreated() {
+    this.userProfileCreated.next();
+  }
 
   async getUserProfile(uid: string) {
     const userRef = doc(this.firestore, `users/${uid}`);
@@ -26,7 +33,7 @@ export class UserService {
     }
     return docSnap;
   }
-  
+
   async updateUserProfile(uid: string, data: Partial<AppUser>) {
     const userRef = doc(this.firestore, `users/${uid}`);
     await updateDoc(userRef, data);

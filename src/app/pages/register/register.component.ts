@@ -25,10 +25,6 @@ export class RegisterComponent {
 
   onSubmit(form: NgForm) {
     if (form.invalid) {
-      Object.keys(form.controls).forEach(field => {
-        const control = form.control.get(field);
-        control?.markAsTouched({ onlySelf: true });
-      });
       return;
     }
 
@@ -55,6 +51,7 @@ export class RegisterComponent {
       })
       .then(() => {
         this.isLoading = false;
+        this.userService.notifyProfileCreated();
         this.router.navigate(['/jogos']);
       })
       .catch(err => {

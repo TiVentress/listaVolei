@@ -1,9 +1,10 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { Unsubscribe } from '@angular/fire/auth';
+import { Unsubscribe, User } from '@angular/fire/auth';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -18,10 +19,18 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   isLoggedIn = false;
   private authUnsubscribe!: Unsubscribe;
+  private profileCreatedSubscription!: Subscription;
 
   ngOnInit(): void {
     this.authUnsubscribe = this.authService.onAuthStateChangedListener(async (user) => {
-      this.isLoggedIn = !!user; 
+      this.isLoggedIn = !!user;
+      if (user) {
+        this.userService.getUserProfile(user.uid);
+      }
+    });
+
+    this.profileCreatedSubscription = this.userService.userProfileCreated$.subscribe(async () => {
+      const user = await this.authService.getCurrentUser();
       if (user) {
         this.userService.getUserProfile(user.uid);
       }
@@ -31,6 +40,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.authUnsubscribe) {
       this.authUnsubscribe();
+    }
+    if (this.profileCreatedSubscription) {
+      this.profileCreatedSubscription.unsubscribe();
     }
   }
 
