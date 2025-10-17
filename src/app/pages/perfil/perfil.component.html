@@ -1,35 +1,42 @@
-<div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-header">
-          <h3>Meu Perfil</h3>
-        </div>
-        <div class="card-body">
-          
-          <form [formGroup]="perfilForm" (ngSubmit)="onSubmit()">
-            
-            <div class="mb-3">
-              <label for="nome" class="form-label">Nome</label>
-              <input type="text" id="nome" class="form-control" formControlName="nome">
-            </div>
-
-            <div class="mb-3">
-              <label for="email" class="form-label">Email</label>
-              <input type="email" id="email" class="form-control" formControlName="email">
-              <small class="form-text text-muted">O email não pode ser alterado.</small>
-            </div>
-
-            <div class="mb-3">
-              <label for="celular" class="form-label">Celular</label>
-              <input type="text" id="celular" class="form-control" formControlName="celular" placeholder="(XX) XXXXX-XXXX">
-            </div>
-
-            <button type="submit" class="btn btn-primary" [disabled]="perfilForm.invalid">Salvar Alterações</button>
-          
-          </form>
+<div class="profile-container">
+  <div class="profile-card" *ngIf="perfilForm">
+    <div class="text-center mb-4">
+      <h1 class="h3 mb-3 fw-normal">Meu Perfil</h1>
+      <p class="text-muted">Atualize suas informações pessoais.</p>
+    </div>
+    <form [formGroup]="perfilForm" (ngSubmit)="onSubmit()">
+      <div class="form-floating mb-3">
+        <input type="text" id="nome" class="form-control" placeholder="Seu nome completo" formControlName="nome"
+               [ngClass]="{ 'is-invalid': perfilForm.get('nome')?.invalid && perfilForm.get('nome')?.touched }">
+        <label for="nome"><i class="bi bi-person-fill me-2"></i>Nome</label>
+        <div *ngIf="perfilForm.get('nome')?.invalid && perfilForm.get('nome')?.touched" class="invalid-feedback">
+          O nome é obrigatório.
         </div>
       </div>
+      <div class="form-floating mb-3">
+        <input type="email" id="email" class="form-control" placeholder="seu@email.com" formControlName="email">
+        <label for="email"><i class="bi bi-envelope-fill me-2"></i>Email</label>
+      </div>
+      <div class="form-floating mb-3">
+        <input type="tel" id="celular" class="form-control" placeholder="(00) 00000-0000" formControlName="celular"
+               [ngClass]="{ 'is-invalid': perfilForm.get('celular')?.invalid && perfilForm.get('celular')?.touched }">
+        <label for="celular"><i class="bi bi-whatsapp me-2"></i>Celular (WhatsApp)</label>
+        <div *ngIf="perfilForm.get('celular')?.invalid && perfilForm.get('celular')?.touched" class="invalid-feedback">
+          O celular é obrigatório.
+        </div>
+      </div>
+      <div class="d-grid mt-4">
+        <button type="submit" class="btn btn-primary btn-lg" [disabled]="perfilForm.invalid || perfilForm.pristine">
+            <span *ngIf="perfilForm.pristine">Nenhuma alteração</span>
+            <span *ngIf="!perfilForm.pristine"><i class="bi bi-check-lg me-2"></i>Salvar Alterações</span>
+        </button>
+      </div>
+    </form>
+  </div>
+  <div *ngIf="!perfilForm" class="text-center">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Carregando...</span>
     </div>
+    <p class="mt-2">Carregando perfil...</p>
   </div>
 </div>
