@@ -1,71 +1,68 @@
-<div class="container mt-4" style="max-width: 350px;">
-  <h2 class="text-center mb-4">{{ editando ? 'Editar Jogo' : 'Novo Jogo' }}</h2>
-
-  <form (ngSubmit)="form.valid && salvar()" #form="ngForm" novalidate>
-
-    <div class="mb-3">
-      <label for="local" class="form-label">Local</label>
-      <input type="text" id="local" name="local" [(ngModel)]="jogo.local" class="form-control" required #local="ngModel"
-        [ngClass]="{'is-invalid': local.invalid && form.submitted}" />
-      <div class="invalid-feedback">O local é obrigatório.</div>
+<div class="form-container">
+  <div class="form-card">
+    <div class="text-center mb-4">
+      <h1 class="h3 mb-3 fw-normal">{{ editando ? 'Editar Jogo' : 'Criar Novo Jogo' }}</h1>
+      <p class="text-muted">Preencha os detalhes da sua partida!</p>
     </div>
-
-    <div class="mb-3">
-      <label for="endereco" class="form-label">Endereço</label>
-      <input type="text" id="endereco" name="endereco" [(ngModel)]="jogo.endereco" class="form-control">
-    </div>
-
-    <div class="mb-3">
-      <label for="tipo" class="form-label">Tipo de Jogo</label>
-      <select id="tipo" name="tipo" [(ngModel)]="jogo.tipo" class="form-select" required #tipo="ngModel">
-        <option [ngValue]="undefined" disabled>Selecione o tipo</option>
-        <option value="Quadra">Quadra</option>
-        <option value="Areia">Areia</option>
-      </select>
-      <div class="invalid-feedback">O tipo de jogo é obrigatório.</div>
-    </div>
-
-    <div class="mb-3">
-      <label for="descricao" class="form-label">Descrição do Jogo</label>
-      <textarea class="form-control" id="descricao" name="descricao" rows="3" [(ngModel)]="jogo.descricao"
-        placeholder="Ex: Nível intermediário, levar bola, etc.">
-      </textarea>
-    </div>
-
-    <div class="mb-3">
-      <label for="maxParticipantes" class="form-label">Nº Máximo de Participantes</label>
-      <input type="number" id="maxParticipantes" name="maxParticipantes" [(ngModel)]="jogo.maxParticipantes"
-        class="form-control" required min="2" #maxParticipantes="ngModel"
-        [ngClass]="{'is-invalid': maxParticipantes.invalid && form.submitted}" />
-      <div class="invalid-feedback" *ngIf="maxParticipantes.errors?.['required']">O número de participantes é
-        obrigatório.</div>
-      <div class="invalid-feedback" *ngIf="maxParticipantes.errors?.['min']">O jogo deve ter no mínimo 2 participantes.
+    <form (ngSubmit)="form.valid && salvar()" #form="ngForm" novalidate>
+      <div class="form-floating mb-3">
+        <input type="text" id="local" class="form-control" placeholder="Ex: Quadra do Zé" [(ngModel)]="jogo.local" name="local" required #local="ngModel">
+        <label for="local"><i class="bi bi-geo-alt-fill me-2"></i>Local</label>
+        <div *ngIf="form.submitted && local.invalid" class="invalid-feedback d-block">O local é obrigatório.</div>
       </div>
-    </div>
-
-    <div class="mb-3">
-      <label for="data" class="form-label">Data</label>
-      <input type="date" id="data" name="data" [(ngModel)]="jogo.data" class="form-control" [min]="dataAtual" required
-        #data="ngModel" [ngClass]="{'is-invalid': data.invalid && form.submitted}" />
-      <div class="invalid-feedback">A data é obrigatória.</div>
-    </div>
-
-    <div class="mb-3">
-      <label for="hora" class="form-label">Hora</label>
-      <input type="time" id="hora" name="hora" [(ngModel)]="jogo.hora" class="form-control" required #hora="ngModel"
-        [ngClass]="{'is-invalid': hora.invalid && form.submitted}" />
-      <div class="invalid-feedback">A hora é obrigatória.</div>
-    </div>
-
-    <div class="mb-3">
-      <label class="form-label">Foto do jogo</label>
-      <input type="file" class="form-control" (change)="selecionarArquivo($event)" />
-      <img *ngIf="editando && jogo.imagemUrl" [src]="jogo.imagemUrl" alt="Imagem atual" class="img-thumbnail mt-2">
-    </div>
-
-    <div class="text-center d-flex justify-content-between mt-3">
-      <button type="button" class="btn btn-secondary w-50 me-2" (click)="cancelar()">Cancelar</button>
-      <button type="submit" class="btn btn-primary w-50">Salvar</button>
-    </div>
-  </form>
+      <div class="form-floating mb-3">
+        <input type="text" id="endereco" class="form-control" placeholder="Ex: Rua das Flores, 123" [(ngModel)]="jogo.endereco" name="endereco">
+        <label for="endereco"><i class="bi bi-signpost-split-fill me-2"></i>Endereço</label>
+      </div>
+      <div class="form-floating mb-3">
+        <select id="tipo" name="tipo" [(ngModel)]="jogo.tipo" class="form-select" required #tipo="ngModel">
+          <option [ngValue]="undefined" disabled selected>Selecione uma opção</option>
+          <option value="Quadra">Quadra</option>
+          <option value="Areia">Areia</option>
+        </select>
+        <label for="tipo"><i class="bi bi-tag-fill me-2"></i>Tipo de Jogo</label>
+         <div *ngIf="form.submitted && tipo.invalid" class="invalid-feedback d-block">O tipo de jogo é obrigatório.</div>
+      </div>
+      <div class="mb-3">
+        <label for="descricao" class="form-label"><i class="bi bi-info-circle-fill me-2"></i>Descrição</label>
+        <textarea class="form-control" id="descricao" name="descricao" rows="3" placeholder="Ex: Nível intermediário, levar bola, etc." [(ngModel)]="jogo.descricao"></textarea>
+      </div>
+      <div class="row g-2 mb-3">
+        <div class="col-md">
+          <div class="form-floating">
+            <input type="date" id="data" class="form-control" [min]="dataAtual" [(ngModel)]="jogo.data" name="data" required #data="ngModel">
+            <label for="data"><i class="bi bi-calendar-event me-2"></i>Data</label>
+          </div>
+        </div>
+        <div class="col-md">
+          <div class="form-floating">
+            <input type="time" id="hora" class="form-control" [(ngModel)]="jogo.hora" name="hora" required #hora="ngModel">
+            <label for="hora"><i class="bi bi-clock-fill me-2"></i>Hora</label>
+          </div>
+        </div>
+         <div *ngIf="form.submitted && (data.invalid || hora.invalid)" class="invalid-feedback d-block col-12 mt-1">Data e hora são obrigatórios.</div>
+      </div>
+      <div class="form-floating mb-3">
+        <input type="number" id="maxParticipantes" class="form-control" placeholder="14" [(ngModel)]="jogo.maxParticipantes" name="maxParticipantes" required min="2" #maxParticipantes="ngModel">
+        <label for="maxParticipantes"><i class="bi bi-people-fill me-2"></i>Máximo de Participantes</label>
+        <div *ngIf="form.submitted && maxParticipantes.invalid" class="invalid-feedback d-block">
+            <span *ngIf="maxParticipantes.errors?.['required']">O número de participantes é obrigatório.</span>
+            <span *ngIf="maxParticipantes.errors?.['min']">O jogo deve ter no mínimo 2 participantes.</span>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="imagem" class="form-label">Foto do Jogo (Opcional)</label>
+        <input type="file" id="imagem" class="form-control" (change)="selecionarArquivo($event)">
+        <img *ngIf="editando && jogo.imagemUrl" [src]="jogo.imagemUrl" alt="Imagem atual" class="img-thumbnail mt-2" style="max-height: 150px;">
+      </div>
+      <div class="d-grid gap-2 mt-4">
+        <button type="submit" class="btn btn-primary btn-lg">
+          <i class="bi bi-check-lg me-2"></i>{{ editando ? 'Salvar Alterações' : 'Criar Jogo' }}
+        </button>
+        <button type="button" class="btn btn-outline-secondary" (click)="cancelar()">
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
 </div>

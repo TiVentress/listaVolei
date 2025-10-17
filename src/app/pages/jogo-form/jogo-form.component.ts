@@ -13,6 +13,7 @@ import { NotificationService } from '../../services/notification.service';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './jogo-form.component.html',
+  styleUrl: './jogo-form.component.css'
 })
 export class JogoFormComponent {
   jogo: Partial<Jogo> = {
@@ -34,7 +35,7 @@ export class JogoFormComponent {
     private router: Router,
     private jogoService: JogoService,
     private uploadSrv: UploadService,
-    private authService: AuthService, 
+    private authService: AuthService,
     private notificationService: NotificationService
   ) {
     const id = this.route.snapshot.paramMap.get('id');
@@ -58,14 +59,14 @@ export class JogoFormComponent {
         this.jogo.imagemUrl = await this.uploadSrv.enviarImagem(this.arquivoSelecionado);
       }
 
+      const currentUser = await this.authService.getCurrentUser();
+      if (!currentUser) {
+        this.notificationService.showError('Você precisa estar logado para criar um jogo.');
+        return;
+      }
+      
       if (!this.editando) {
-        const currentUser = await this.authService.getCurrentUser();
-        if (currentUser) {
-          this.jogo.creatorId = currentUser.uid;
-        } else {
-          this.notificationService.showError('Você precisa estar logado para criar um jogo.');
-          return;
-        }
+        this.jogo.creatorId = currentUser.uid;
       }
 
       if (this.editando && this.idEditando) {
