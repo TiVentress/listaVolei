@@ -11,6 +11,7 @@ import { UserService } from '../../services/user.service';
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './register.component.html',
+  styleUrl: './register.component.css'
 })
 export class RegisterComponent {
   error: string | null = null;
@@ -24,6 +25,10 @@ export class RegisterComponent {
 
   onSubmit(form: NgForm) {
     if (form.invalid) {
+      Object.keys(form.controls).forEach(field => {
+        const control = form.control.get(field);
+        control?.markAsTouched({ onlySelf: true });
+      });
       return;
     }
 
