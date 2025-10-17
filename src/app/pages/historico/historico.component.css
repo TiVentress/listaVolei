@@ -1,0 +1,22 @@
+.historico-container {
+  background-color: #f8f9fa;
+  min-height: 85vh;
+}
+
+.empty-state i {
+  opacity: 0.6;
+}
+
+.jogo-card-historico {
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  border: 0;
+}
+
+.jogo-card-historico:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1) !important;
+}
+
+.card-title {
+    font-weight: 600;
+}
