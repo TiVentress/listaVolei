@@ -1,0 +1,39 @@
+/* src/app/pages/meus-jogos/meus-jogos.component.css */
+
+.meus-jogos-container {
+  background-color: #f8f9fa;
+  min-height: 85vh;
+}
+
+.jogos-card {
+  background-color: #fff;
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #dee2e6;
+  height: 100%;
+}
+
+.card-title {
+  font-weight: 600;
+  color: #343a40;
+}
+
+.list-group-item {
+  border-radius: 0.5rem !important;
+  margin-bottom: 0.5rem;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.list-group-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.list-group-item:last-child {
+  margin-bottom: 0;
+}
+
+.empty-state {
+  color: #6c757d;
+}

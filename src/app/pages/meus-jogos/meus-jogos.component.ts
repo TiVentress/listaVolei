@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router'; 
+import { CommonModule, DatePipe } from '@angular/common'; // 1. IMPORTAR DatePipe
+import { RouterModule } from '@angular/router';
 import { Jogo } from '../../models/jogo.model';
 import { JogoService } from '../../services/jogo.service';
 import { AuthService } from '../../services/auth.service';
@@ -8,8 +8,9 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-meus-jogos',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, DatePipe], // 2. ADICIONAR DatePipe AQUI
   templateUrl: './meus-jogos.component.html',
+  styleUrl: './meus-jogos.component.css'
 })
 export class MeusJogosComponent implements OnInit {
   jogosCriados: Jogo[] = [];
@@ -48,3 +49,4 @@ export class MeusJogosComponent implements OnInit {
     }
   }
 }
+
