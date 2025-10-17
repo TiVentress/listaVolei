@@ -1,59 +1,41 @@
+/* src/app/pages/register/register.component.css */
+
 .register-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: calc(100vh - 76px);
-  background-color: #f8f9fa;
-  padding: 2rem 1rem;
+  min-height: 80vh;
+  background-color: #f8f9fa; /* Um cinza claro para o fundo */
+  padding: 2rem;
 }
 
 .register-card {
   width: 100%;
-  max-width: 480px;
+  max-width: 480px; /* Um pouco mais largo para acomodar todos os campos */
   padding: 2.5rem;
-  background-color: #ffffff;
-  border: none;
-  border-radius: 0.75rem;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  margin: auto;
+  background-color: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.form-floating .form-control {
-  height: calc(3.5rem + 2px);
-  line-height: 1.25;
+/* Alveja o h1 dentro do card de registo para garantir a aplicação do estilo */
+.register-card h1 {
+  color: #0d6efd !important;   /* Azul primário do Bootstrap */
+  font-weight: 700 !important; /* Negrito */
 }
 
-.form-floating > label {
-  padding: 1rem 0.75rem;
-  color: #6c757d;
-}
-
-.btn-primary {
-  padding: 0.75rem;
-  font-size: 1rem;
-  font-weight: 500;
-  border-radius: 0.5rem;
-  transition: all 0.2s ease-in-out;
-}
-
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
-}
-
-.alert-danger {
-  font-size: 0.875rem;
-  width: 100%;
-  margin-top: -0.75rem;
-  margin-bottom: 1rem;
-  border-radius: 0.5rem;
+/* Garante que as mensagens de erro de validação apareçam */
+.invalid-feedback.d-block {
+  display: block;
 }
 
 a {
   color: #0d6efd;
-  font-weight: 500;
   text-decoration: none;
 }
 
 a:hover {
   text-decoration: underline;
 }
+

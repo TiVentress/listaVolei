@@ -1,15 +1,16 @@
 <div class="meus-jogos-container">
   <div class="container py-5">
     <div class="text-center mb-5">
-      <h1 class="display-5 fw-bold">Meus Jogos</h1>
-      <p class="text-muted">Acompanhe aqui os jogos que você criou e as partidas que vai participar.</p>
+      <h1 class="display-5 fw-bold titulo-pagina">Meus Jogos</h1>
+      <p class="lead text-muted">Acompanhe aqui os jogos que você criou e as partidas que vai participar.</p>
     </div>
 
     <div class="row g-5">
       <!-- Coluna para Jogos Criados -->
       <div class="col-lg-6">
         <div class="jogos-card">
-          <h3 class="card-title"><i class="bi bi-plus-circle-fill me-2"></i>Jogos Criados por Mim</h3>
+          <!-- COR APLICADA AQUI -->
+          <h3 class="card-title text-primary"><i class="bi bi-plus-circle-fill me-2"></i>Jogos Criados por Mim</h3>
           <hr>
 
           <!-- Estado de Carregamento -->
@@ -26,7 +27,7 @@
             <a routerLink="/jogos/novo" class="btn btn-primary mt-2">Criar meu primeiro jogo</a>
           </div>
 
-          <!-- Lista de Jogos Criados (Leva para a página de gerenciamento) -->
+          <!-- Lista de Jogos -->
           <div *ngIf="!isLoadingCriados && jogosCriados.length > 0" class="list-group">
             <a *ngFor="let jogo of jogosCriados" [routerLink]="['/jogos', jogo.id, 'participantes']" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
               <div>
@@ -42,7 +43,8 @@
       <!-- Coluna para Jogos Inscritos -->
       <div class="col-lg-6">
         <div class="jogos-card">
-          <h3 class="card-title"><i class="bi bi-check-circle-fill me-2"></i>Jogos que Participo</h3>
+          <!-- COR APLICADA AQUI -->
+          <h3 class="card-title text-primary"><i class="bi bi-check-circle-fill me-2"></i>Jogos que Participo</h3>
           <hr>
 
           <!-- Estado de Carregamento -->
@@ -59,7 +61,7 @@
             <a routerLink="/jogos" class="btn btn-primary mt-2">Encontrar um jogo</a>
           </div>
 
-          <!-- Lista de Jogos Inscritos (Leva para o card na página de jogos) - CORRIGIDO -->
+          <!-- Lista de Jogos -->
           <div *ngIf="!isLoadingInscritos && jogosInscritos.length > 0" class="list-group">
             <a *ngFor="let jogo of jogosInscritos" [routerLink]="['/jogos']" [fragment]="'jogo-' + jogo.id" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
               <div>
@@ -74,3 +76,4 @@
     </div>
   </div>
 </div>
+

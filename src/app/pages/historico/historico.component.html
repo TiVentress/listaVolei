@@ -1,8 +1,8 @@
 <div class="historico-container">
   <div class="container py-5">
     <div class="text-center mb-5">
-      <h1 class="display-5 fw-bold">Histórico de Partidas</h1>
-      <p class="text-muted">Relembre aqui os jogos que já aconteceram.</p>
+      <h1 class="display-5 fw-bold titulo-pagina">Histórico de Partidas</h1>
+      <p class="lead">Relembre aqui os jogos que já aconteceram.</p>
     </div>
 
     <!-- Indicador de Carregamento -->
@@ -27,7 +27,8 @@
               <span class="badge mb-2" [ngClass]="{'bg-secondary': jogo.status === 'Cancelado', 'bg-success': jogo.status !== 'Cancelado'}">
                 {{ jogo.status === 'Cancelado' ? 'Cancelado' : 'Finalizado' }}
               </span>
-              <h5 class="card-title">{{ jogo.local }}</h5>
+              <!-- COR APLICADA AQUI -->
+              <h5 class="card-title text-primary">{{ jogo.local }}</h5>
               <p class="card-text mb-2">
                 <small class="text-muted">{{ jogo.data | date:'dd/MM/yyyy' }} às {{ jogo.hora }}</small>
               </p>
@@ -43,3 +44,4 @@
     </div>
   </div>
 </div>
+

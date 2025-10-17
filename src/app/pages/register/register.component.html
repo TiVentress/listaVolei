@@ -1,53 +1,66 @@
 <div class="register-container">
   <div class="register-card">
     <div class="text-center mb-4">
-      <h1 class="h3 mb-3 fw-normal">Crie sua Conta</h1>
-      <p class="text-muted">Junte-se à comunidade ListaVôlei para organizar e participar de jogos!</p>
+      <!-- Classe 'fw-normal' removida da linha abaixo -->
+      <h1 class="h3 mb-3">Crie sua Conta</h1>
+      <p>Junte-se à comunidade ListaVôlei!</p>
     </div>
-    <form #form="ngForm" (ngSubmit)="onSubmit(form)" novalidate>
+    <form #form="ngForm" (ngSubmit)="onSubmit(form)">
+      <!-- Nome Completo -->
       <div class="form-floating mb-3">
-        <input type="text" class="form-control" id="name" placeholder="Nome Completo" name="name" ngModel required #name="ngModel">
+        <input type="text" class="form-control" name="name" ngModel required #name="ngModel" placeholder="Nome Completo">
         <label for="name">Nome Completo</label>
+        <div *ngIf="name.invalid && (name.dirty || name.touched)" class="invalid-feedback d-block">
+          Nome é obrigatório.
+        </div>
       </div>
-      <div *ngIf="name.invalid && (name.dirty || name.touched)" class="alert alert-danger p-2 small">
-        Nome é obrigatório.
-      </div>
+
+      <!-- Celular -->
       <div class="form-floating mb-3">
-        <input type="tel" class="form-control" id="phone" placeholder="(XX) XXXXX-XXXX" name="phone" ngModel required #phone="ngModel">
+        <input type="tel" class="form-control" name="phone" ngModel required #phone="ngModel" placeholder="(XX) XXXXX-XXXX">
         <label for="phone">Celular (WhatsApp)</label>
+        <div *ngIf="phone.invalid && (phone.dirty || phone.touched)" class="invalid-feedback d-block">
+          Celular é obrigatório.
+        </div>
       </div>
-       <div *ngIf="phone.invalid && (phone.dirty || phone.touched)" class="alert alert-danger p-2 small">
-        Celular é obrigatório.
-      </div>
+
+      <!-- Email -->
       <div class="form-floating mb-3">
-        <input type="email" class="form-control" id="email" placeholder="seuemail@exemplo.com" name="email" ngModel required email #email="ngModel">
+        <input type="email" class="form-control" name="email" ngModel required email #email="ngModel" placeholder="seuemail@exemplo.com">
         <label for="email">Email</label>
+        <div *ngIf="email.invalid && (email.dirty || email.touched)" class="invalid-feedback d-block">
+          <div *ngIf="email.errors?.['required']">Email é obrigatório.</div>
+          <div *ngIf="email.errors?.['email']">Email inválido.</div>
+        </div>
       </div>
-      <div *ngIf="email.invalid && (email.dirty || email.touched)" class="alert alert-danger p-2 small">
-        <div *ngIf="email.errors?.['required']">Email é obrigatório.</div>
-        <div *ngIf="email.errors?.['email']">Por favor, insira um email válido.</div>
-      </div>
+
+      <!-- Senha -->
       <div class="form-floating mb-3">
-        <input type="password" class="form-control" id="password" placeholder="Senha" name="password" ngModel required minlength="6" #password="ngModel">
+        <input type="password" class="form-control" name="password" ngModel required minlength="6" #password="ngModel" placeholder="Mínimo 6 caracteres">
         <label for="password">Senha</label>
+        <div *ngIf="password.invalid && (password.dirty || password.touched)" class="invalid-feedback d-block">
+          <div *ngIf="password.errors?.['required']">Senha é obrigatória.</div>
+          <div *ngIf="password.errors?.['minlength']">A senha deve ter no mínimo 6 caracteres.</div>
+        </div>
       </div>
-       <div *ngIf="password.invalid && (password.dirty || password.touched)" class="alert alert-danger p-2 small">
-        <div *ngIf="password.errors?.['required']">Senha é obrigatória.</div>
-        <div *ngIf="password.errors?.['minlength']">A senha precisa ter no mínimo 6 caracteres.</div>
-      </div>
+
+      <!-- Confirmar Senha -->
       <div class="form-floating mb-3">
-        <input type="password" class="form-control" id="confirmPassword" placeholder="Confirmar Senha" name="confirmPassword" ngModel required #confirmPassword="ngModel">
+        <input type="password" class="form-control" name="confirmPassword" ngModel required #confirmPassword="ngModel" placeholder="Confirmar Senha">
         <label for="confirmPassword">Confirmar Senha</label>
       </div>
-      <div *ngIf="error" class="alert alert-danger p-2 small mt-3">{{ error }}</div>
-      <button type="submit" class="w-100 btn btn-lg btn-primary mt-3" [disabled]="form.invalid || isLoading">
+
+      <div *ngIf="error" class="alert alert-danger py-2 mt-3">{{ error }}</div>
+
+      <button type="submit" class="btn btn-primary w-100 mt-3 btn-lg" [disabled]="form.invalid || isLoading">
         <span *ngIf="!isLoading">Criar Conta</span>
         <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-        <span *ngIf="isLoading"> Criando...</span>
       </button>
     </form>
-    <div class="text-center mt-4">
-        <p class="mb-0">Já tem uma conta? <a routerLink="/login">Faça login</a></p>
+
+    <div class="text-center mt-3">
+      <a routerLink="/login">Já tem uma conta? Faça login</a>
     </div>
   </div>
 </div>
+
