@@ -1,27 +1,20 @@
 <div class="hero-container">
-  <!-- Camada das Imagens de Fundo Animadas -->
   <div class="hero-slides">
     <div *ngFor="let image of images" class="hero-slide" [style.background-image]="'url(' + image + ')'"></div>
   </div>
-
-  <!-- Camada de Conteúdo (Texto e Botões) que fica fixa por cima -->
   <div class="hero-content text-center text-white">
     <h2 class="display-4 fw-bold app-title mb-4">
       <i class="bi bi-volleyball me-2"></i>ListaVôlei
     </h2>
     <h1 class="display-5 fw-bold">Organize e Participe de Jogos de Vôlei</h1>
-    <p class="lead my-4">A plataforma definitiva para encontrar partidas, gerir a sua equipa e nunca mais perder um jogo.</p>
+    <p class="lead my-4">A plataforma definitiva para encontrar partidas, gerir o seu grupo e nunca mais perder um jogo.</p>
     
-    <!-- AQUI ESTÁ A CORREÇÃO DOS BOTÕES -->
     <div class="d-grid gap-2 d-sm-block">
       <a routerLink="/register" class="btn btn-warning btn-lg fw-bold">Crie a sua Conta Grátis</a>
       <a routerLink="/login" class="btn btn-outline-light btn-lg ms-sm-2">Já tenho uma conta</a>
     </div>
-
   </div>
 </div>
-
-<!-- O resto da sua página continua igual -->
 <div class="container my-5">
   <div class="row text-center">
     <div class="col-md-4">

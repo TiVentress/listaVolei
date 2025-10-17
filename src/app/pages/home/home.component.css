@@ -3,7 +3,7 @@
   height: 85vh;
   min-height: 500px;
   width: 100%;
-  background-color: #333; /* Cor de fundo enquanto as imagens carregam */
+  background-color: #333;
 }
 
 .hero-slides {
@@ -22,11 +22,10 @@
   height: 100%;
   background-size: cover;
   background-position: center;
-  opacity: 0; /* Todas as imagens começam invisíveis */
-  animation: crossfade 48s infinite; /* Duração total = 5s por imagem * 4 imagens */
+  opacity: 0;
+  animation: crossfade 48s infinite;
 }
 
-/* Define um atraso para a animação de cada imagem, para que apareçam em sequência */
 .hero-slide:nth-child(1) { animation-delay: 0s; }
 .hero-slide:nth-child(2) { animation-delay: 8s; }
 .hero-slide:nth-child(3) { animation-delay: 16s; }
@@ -34,16 +33,14 @@
 .hero-slide:nth-child(5) { animation-delay: 32s; }
 .hero-slide:nth-child(6) { animation-delay: 40s; }
 
-/* A animação em si: faz a imagem aparecer, ficar visível e desaparecer */
 @keyframes crossfade {
   0% { opacity: 0; }
-  12.5% { opacity: 1; } /* Aparece (fade-in) */
-  25% { opacity: 1; }   /* Fica visível */
-  37.5% { opacity: 0; } /* Desaparece (fade-out) */
+  12.5% { opacity: 1; } 
+  25% { opacity: 1; }   
+  37.5% { opacity: 0; } 
   100% { opacity: 0; }
 }
 
-/* Estilos para a camada de texto */
 .hero-content {
   position: relative;
   z-index: 10;
@@ -52,7 +49,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: rgba(0, 0, 0, 0.5); /* Sombra escura para o texto ser legível */
+  background-color: rgba(0, 0, 0, 0.5);
   padding: 20px;
 }
 
