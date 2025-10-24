@@ -104,14 +104,65 @@ export class ParticipantesComponent implements OnInit {
     }
   }
 
-  alternarConfirmacao(p: Participante) {
-    p.presencaConfirmada
-      ? this.participanteService.desconfirmar(this.jogoId, p.id!)
-      : this.participanteService.confirmar(this.jogoId, p.id!);
+  async alternarConfirmacao(p: Participante) {
+    if (!p.id) return; // Segurança extra
+
+    const estavaConfirmado = p.presencaConfirmada; // Guarda o estado atual
+    const acao = estavaConfirmado ? 'desconfirmar' : 'confirmar';
+    const acaoVerbo = estavaConfirmado ? 'desconfirmada' : 'confirmada';
+
+    try {
+      // 1. Chama o serviço para atualizar no Firestore
+      if (estavaConfirmado) {
+        await this.participanteService.desconfirmar(this.jogoId, p.id);
+      } else {
+        await this.participanteService.confirmar(this.jogoId, p.id);
+      }
+
+      // 2. Atualiza o estado LOCALMENTE para feedback imediato
+      p.presencaConfirmada = !estavaConfirmado;
+
+      // 3. Mostra a notificação de sucesso
+      this.notificationService.showSuccess(`Presença ${acaoVerbo} para ${p.nome}!`);
+
+    } catch (error) {
+      console.error(`Erro ao ${acao} presença:`, error);
+      this.notificationService.showError(`Ocorreu um erro ao ${acao} a presença.`);
+      // Reverte a alteração local em caso de erro
+      p.presencaConfirmada = estavaConfirmado;
+    }
   }
 
   remover(id: string) {
-    this.participanteService.remover(this.jogoId, id);
+    Swal.fire({
+      title: 'Tem certeza?',
+      text: "Deseja remover este participante?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sim, remover!',
+      cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          // 1. Chama o serviço para remover do Firestore
+          await this.participanteService.remover(this.jogoId, id);
+
+          // 2. Remove localmente das listas para feedback visual imediato
+          this.participantes = this.participantes.filter(par => par.id !== id);
+          this.listaDeEspera = this.listaDeEspera.filter(par => par.id !== id);
+
+          // 3. Mostra a notificação de sucesso
+          this.notificationService.showSuccess('Participante removido com sucesso.');
+
+        } catch (error) {
+          console.error("Erro ao remover participante:", error);
+          // 4. Mostra a notificação de erro
+          this.notificationService.showError('Ocorreu um erro ao remover o participante.');
+        }
+      }
+    });
   }
 
   async mostrarDetalhes(participante: Participante) {
