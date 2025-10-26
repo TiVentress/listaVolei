@@ -1,0 +1,59 @@
+/* src/app/pages/jogos/jogos.component.css */
+
+.jogo-card {
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  border: none; /* Remove a borda padrão */
+  overflow: hidden; /* Garante que a imagem não ultrapasse o border-radius */
+  border-radius: 0.75rem; /* Arredondamento suave */
+}
+
+.jogo-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+}
+
+.card-title {
+  min-height: 2.5em; /* Garante altura mínima para alinhar cards com títulos de 1 ou 2 linhas */
+}
+
+/* Ajustes finos na secção expansível */
+.collapse .small {
+  font-size: 0.85rem;
+}
+
+.collapse h6 {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+/* Ícones nos detalhes */
+.card-body .bi {
+  font-size: 1.1rem;
+  width: 20px; /* Garante alinhamento */
+}
+
+/* Placeholder SVG */
+.card-img-top svg {
+  opacity: 0.5;
+}
+
+/* Botão de expandir */
+.card-footer .btn-link {
+  font-size: 0.85rem;
+}
+.card-footer .btn-link i {
+  transition: transform 0.2s ease-in-out;
+}
+/* Gira a seta quando expandido */
+.card-footer .btn-link[aria-expanded="true"] i {
+   transform: rotate(180deg);
+}
+
+/* Ajustes no cabeçalho da página */
+.lead {
+  opacity: 0.85; /* Deixa o subtítulo um pouco mais suave */
+}
+
+.empty-state i {
+  opacity: 0.6;
+}

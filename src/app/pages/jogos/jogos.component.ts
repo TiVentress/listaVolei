@@ -21,6 +21,7 @@ import { Firestore, doc, updateDoc, arrayUnion, arrayRemove } from '@angular/fir
   imports: [CommonModule, RouterModule, FormsModule],
   providers: [DatePipe],
   templateUrl: './jogos.component.html',
+  styleUrl: './jogos.component.css'
 })
 export class JogosComponent implements OnInit {
   jogosOriginais: Jogo[] = [];
