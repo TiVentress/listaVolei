@@ -10,10 +10,8 @@
     </button>
 
     <div class="collapse navbar-collapse" id="navbarNav">
-      <!-- Links Principais -->
       <ul class="navbar-nav me-auto w-75 justify-content-between">
         
-        <!-- AQUI ESTÁ A CORREÇÃO: Adicionado *ngIf="isLoggedIn" -->
         <li class="nav-item ms-lg-5" *ngIf="isLoggedIn">
           <a class="nav-link d-flex align-items-center" routerLink="/jogos" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
             <i class="bi bi-calendar-event me-1"></i>Encontre Jogos
@@ -37,9 +35,7 @@
         </li>
       </ul>
 
-      <!-- Ações do Usuário (alinhadas à direita) -->
       <ul class="navbar-nav align-items-center">
-        <!-- Logado -->
         <ng-container *ngIf="isLoggedIn">
           <li class="nav-item dropdown ms-lg-3">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
@@ -53,7 +49,6 @@
           </li>
         </ng-container>
 
-        <!-- Deslogado -->
         <ng-container *ngIf="!isLoggedIn">
           <li class="nav-item">
             <a class="nav-link" routerLink="/login">Login</a>

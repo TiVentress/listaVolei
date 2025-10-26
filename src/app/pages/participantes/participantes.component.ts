@@ -9,7 +9,7 @@ import { AuthService } from '../../services/auth.service';
 import { UserService, AppUser } from '../../services/user.service';
 import { NotificationService } from '../../services/notification.service';
 import Swal from 'sweetalert2';
-import { firstValueFrom } from 'rxjs'; // 1. Importar o firstValueFrom
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-participantes',
@@ -42,7 +42,6 @@ export class ParticipantesComponent implements OnInit {
     this.carregarTudo();
   }
 
-  // 2. Lógica de carregamento refatorada para ser mais robusta
   async carregarTudo() {
     this.isLoading = true;
     try {
@@ -53,7 +52,6 @@ export class ParticipantesComponent implements OnInit {
         return;
       }
 
-      // Converte o observable para uma promise que resolve com o primeiro valor
       const jogo = await firstValueFrom(this.jogoService.obterPorId(this.jogoId));
 
       if (!jogo) {
@@ -76,12 +74,10 @@ export class ParticipantesComponent implements OnInit {
       console.error("Erro ao carregar dados:", error);
       this.notificationService.showError("Falha ao carregar os detalhes do jogo.");
     } finally {
-      // 3. O 'finally' garante que o loader SEMPRE será desligado
       this.isLoading = false;
     }
   }
   
-  // O restante dos seus métodos permanece igual
   get participantesFiltrados() {
     return this.participantes.filter(p =>
       p.nome.toLowerCase().includes(this.filtroNome.toLowerCase())
@@ -105,30 +101,26 @@ export class ParticipantesComponent implements OnInit {
   }
 
   async alternarConfirmacao(p: Participante) {
-    if (!p.id) return; // Segurança extra
+    if (!p.id) return;
 
-    const estavaConfirmado = p.presencaConfirmada; // Guarda o estado atual
+    const estavaConfirmado = p.presencaConfirmada;
     const acao = estavaConfirmado ? 'desconfirmar' : 'confirmar';
     const acaoVerbo = estavaConfirmado ? 'desconfirmada' : 'confirmada';
 
     try {
-      // 1. Chama o serviço para atualizar no Firestore
       if (estavaConfirmado) {
         await this.participanteService.desconfirmar(this.jogoId, p.id);
       } else {
         await this.participanteService.confirmar(this.jogoId, p.id);
       }
 
-      // 2. Atualiza o estado LOCALMENTE para feedback imediato
       p.presencaConfirmada = !estavaConfirmado;
 
-      // 3. Mostra a notificação de sucesso
       this.notificationService.showSuccess(`Presença ${acaoVerbo} para ${p.nome}!`);
 
     } catch (error) {
       console.error(`Erro ao ${acao} presença:`, error);
       this.notificationService.showError(`Ocorreu um erro ao ${acao} a presença.`);
-      // Reverte a alteração local em caso de erro
       p.presencaConfirmada = estavaConfirmado;
     }
   }
@@ -146,19 +138,15 @@ export class ParticipantesComponent implements OnInit {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          // 1. Chama o serviço para remover do Firestore
           await this.participanteService.remover(this.jogoId, id);
 
-          // 2. Remove localmente das listas para feedback visual imediato
           this.participantes = this.participantes.filter(par => par.id !== id);
           this.listaDeEspera = this.listaDeEspera.filter(par => par.id !== id);
 
-          // 3. Mostra a notificação de sucesso
           this.notificationService.showSuccess('Participante removido com sucesso.');
 
         } catch (error) {
           console.error("Erro ao remover participante:", error);
-          // 4. Mostra a notificação de erro
           this.notificationService.showError('Ocorreu um erro ao remover o participante.');
         }
       }

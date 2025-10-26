@@ -1,7 +1,6 @@
 <div class="participantes-container">
   <div class="container py-5">
 
-    <!-- Indicador de Carregamento -->
     <div *ngIf="isLoading" class="text-center pt-5">
       <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
         <span class="visually-hidden">Carregando...</span>
@@ -9,14 +8,12 @@
       <p class="mt-3 text-muted">Buscando detalhes do jogo...</p>
     </div>
 
-    <!-- Conteúdo Principal (só aparece quando isLoading é false) -->
     <div *ngIf="!isLoading">
       <div class="text-center mb-5">
         <h1 class="display-5 fw-bold titulo-pagina">Lista de Presença</h1>
         <p class="lead text-muted">Gerencie ou visualize os participantes da partida.</p>
       </div>
 
-      <!-- Controles de Administrador: Adicionar Manualmente -->
       <div *ngIf="isCreator" class="card shadow-sm mb-4">
         <div class="card-body">
           <h5 class="card-title mb-3">Adicionar Participante Manualmente</h5>
@@ -27,11 +24,9 @@
         </div>
       </div>
 
-      <!-- Card Principal com as Listas de Participantes -->
       <div class="card shadow-sm">
         <div class="card-body p-4">
 
-          <!-- Campo de Filtro -->
           <div class="mb-4">
              <div class="input-group">
                 <span class="input-group-text bg-light border-end-0"><i class="bi bi-search"></i></span>
@@ -39,18 +34,15 @@
              </div>
           </div>
 
-          <!-- Lista de Confirmados -->
           <h4 class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i>Confirmados ({{ participantesFiltrados.length }})</h4>
           <ul class="list-group list-group-flush mb-4">
             <li *ngFor="let p of participantesFiltrados" class="list-group-item d-flex justify-content-between align-items-center px-0 py-3">
               <span class="fw-bold">{{ p.nome }}</span>
-              <!-- Container para os botões -->
               <div class="d-flex flex-wrap justify-content-end gap-2 participant-actions">
                 <button class="btn btn-sm btn-outline-info" (click)="mostrarDetalhes(p)">
                   <i class="bi bi-person-lines-fill"></i> Ver Contato
                 </button>
 
-                <!-- BOTÃO RESTAURADO: Confirmar/Desconfirmar (apenas para o criador) -->
                 <button *ngIf="isCreator" class="btn btn-sm"
                         [ngClass]="p.presencaConfirmada ? 'btn-secondary' : 'btn-outline-success'"
                         (click)="alternarConfirmacao(p)">
@@ -66,7 +58,6 @@
             <li *ngIf="participantesFiltrados.length === 0" class="list-group-item text-muted text-center px-0 py-3">Nenhum participante confirmado ainda.</li>
           </ul>
 
-          <!-- Lista de Espera -->
           <h4 class="mb-3"><i class="bi bi-clock-history text-warning me-2"></i>Lista de Espera ({{ listaDeEsperaFiltrada.length }})</h4>
           <ul class="list-group list-group-flush">
             <li *ngFor="let p of listaDeEsperaFiltrada" class="list-group-item d-flex justify-content-between align-items-center px-0 py-3">
@@ -75,7 +66,6 @@
                 <button class="btn btn-sm btn-outline-info" (click)="mostrarDetalhes(p)">
                     <i class="bi bi-person-lines-fill"></i> Ver Contato
                 </button>
-                <!-- Botões da Lista de Espera (apenas para o criador) -->
                 <button *ngIf="isCreator" class="btn btn-sm btn-outline-success" (click)="alternarConfirmacao(p)">
                     <i class="bi bi-check2-circle"></i> Confirmar
                 </button>
@@ -91,4 +81,3 @@
     </div>
   </div>
 </div>
-

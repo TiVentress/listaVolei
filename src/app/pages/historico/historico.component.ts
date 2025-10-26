@@ -7,7 +7,7 @@ import { RouterModule } from '@angular/router';
 @Component({
   selector: 'app-historico',
   standalone: true,
-  imports: [CommonModule, RouterModule, DatePipe], // Adicione DatePipe aqui
+  imports: [CommonModule, RouterModule, DatePipe],
   templateUrl: './historico.component.html',
   styleUrls: ['./historico.component.css']
 })
@@ -18,7 +18,6 @@ export class HistoricoComponent implements OnInit {
   constructor(private jogoService: JogoService) { }
 
   ngOnInit(): void {
-    // Usaremos um novo método que criaremos no próximo passo
     this.jogoService.getHistoricoJogos().subscribe(jogos => {
       this.jogosPassados = jogos;
       this.isLoading = false;

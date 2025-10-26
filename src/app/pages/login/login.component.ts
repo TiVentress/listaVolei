@@ -9,10 +9,9 @@ import { AuthService } from '../../services/auth.service';
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'] // Vamos adicionar o link para o nosso novo CSS
+  styleUrls: ['./login.component.css'] 
 })
 export class LoginComponent {
-  // Agrupamos as credenciais num objeto, como é comum em formulários
   credentials = {
     email: '',
     password: ''
@@ -23,9 +22,8 @@ export class LoginComponent {
 
   async login() {
     try {
-      // Usamos as propriedades do nosso novo objeto 'credentials'
       await this.auth.login(this.credentials.email, this.credentials.password);
-      this.error = ''; // Limpa o erro em caso de sucesso
+      this.error = ''; 
     } catch (err) {
       this.error = 'Usuário ou senha inválidos';
     }

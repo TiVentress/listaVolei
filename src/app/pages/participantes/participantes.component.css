@@ -6,7 +6,6 @@
   font-weight: 600;
 }
 
-/* Garante que os botões se ajustem bem em telas pequenas */
 @media (max-width: 576px) {
   .list-group-item {
     flex-direction: column;

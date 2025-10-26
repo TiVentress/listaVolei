@@ -8,13 +8,11 @@ import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
-  // AQUI ESTÁ A MUDANÇA: A rota principal agora carrega a página Home
   { 
     path: '', 
     loadComponent: () => import('./pages/home/home.component').then(m => m.HomeComponent) 
   },
   
-  // O resto das suas rotas permanece exatamente igual
   { path: 'login', component: LoginComponent },
   { path: 'jogos', component: JogosComponent, canActivate: [authGuard] },
   { path: 'jogos/novo', component: JogoFormComponent, canActivate: [authGuard] },

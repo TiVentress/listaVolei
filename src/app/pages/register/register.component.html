@@ -1,12 +1,10 @@
 <div class="register-container">
   <div class="register-card">
     <div class="text-center mb-4">
-      <!-- Classe 'fw-normal' removida da linha abaixo -->
       <h1 class="h3 mb-3">Crie sua Conta</h1>
       <p>Junte-se à comunidade ListaVôlei!</p>
     </div>
     <form #form="ngForm" (ngSubmit)="onSubmit(form)">
-      <!-- Nome Completo -->
       <div class="form-floating mb-3">
         <input type="text" class="form-control" name="name" ngModel required #name="ngModel" placeholder="Nome Completo">
         <label for="name">Nome Completo</label>
@@ -15,7 +13,6 @@
         </div>
       </div>
 
-      <!-- Celular -->
       <div class="form-floating mb-3">
         <input type="tel" class="form-control" name="phone" ngModel required #phone="ngModel" placeholder="(XX) XXXXX-XXXX">
         <label for="phone">Celular (WhatsApp)</label>
@@ -24,7 +21,6 @@
         </div>
       </div>
 
-      <!-- Email -->
       <div class="form-floating mb-3">
         <input type="email" class="form-control" name="email" ngModel required email #email="ngModel" placeholder="seuemail@exemplo.com">
         <label for="email">Email</label>
@@ -34,7 +30,6 @@
         </div>
       </div>
 
-      <!-- Senha -->
       <div class="form-floating mb-3">
         <input type="password" class="form-control" name="password" ngModel required minlength="6" #password="ngModel" placeholder="Mínimo 6 caracteres">
         <label for="password">Senha</label>
@@ -44,7 +39,6 @@
         </div>
       </div>
 
-      <!-- Confirmar Senha -->
       <div class="form-floating mb-3">
         <input type="password" class="form-control" name="confirmPassword" ngModel required #confirmPassword="ngModel" placeholder="Confirmar Senha">
         <label for="confirmPassword">Confirmar Senha</label>
@@ -63,4 +57,3 @@
     </div>
   </div>
 </div>
-

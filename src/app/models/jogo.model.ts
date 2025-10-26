@@ -1,5 +1,3 @@
-// src/app/models/jogo.model.ts
-
 import { Participante } from './participante.model';
 
 export interface Jogo {

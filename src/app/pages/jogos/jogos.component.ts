@@ -1,5 +1,3 @@
-// Arquivo: src/app/pages/jogos/jogos.component.ts
-
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, DatePipe, ViewportScroller } from '@angular/common';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
@@ -50,7 +48,6 @@ export class JogosComponent implements OnInit {
     this.carregar();
   }
 
-  // MÉTODO CARREGAR COM A LÓGICA FINAL
   private carregar() {
     this.isLoading = true;
     this.jogoService.listarTodos().subscribe(todosOsJogos => {
@@ -62,7 +59,6 @@ export class JogosComponent implements OnInit {
       this.jogosOriginais = todosOsJogos;
       const hoje = new Date().toISOString().split('T')[0];
 
-      // Por padrão, exibe apenas os jogos futuros.
       let jogosParaExibir = this.jogosOriginais.filter(j => j.data >= hoje);
 
       this.route.fragment.pipe(first()).subscribe(fragment => {
@@ -70,17 +66,13 @@ export class JogosComponent implements OnInit {
           const jogoId = fragment.replace('jogo-', '');
           const jogoAlvo = this.jogosOriginais.find(j => j.id === jogoId);
           
-          // AQUI ESTÁ A MÁGICA:
-          // Se o jogo alvo existe, mas não está na lista de exibição (porque é antigo),
-          // nós o adicionamos temporariamente.
           if (jogoAlvo && !jogosParaExibir.some(j => j.id === jogoId)) {
             jogosParaExibir.push(jogoAlvo);
           }
           
           setTimeout(() => this.viewportScroller.scrollToAnchor(fragment), 300);
         }
-        
-        // Atribui a lista final (com o possível jogo antigo) à variável de exibição
+  
         this.jogos = jogosParaExibir;
         this.isLoading = false;
       });
@@ -103,7 +95,6 @@ export class JogosComponent implements OnInit {
     this.jogos = jogosParaFiltrar;
   }
   
-  // O resto do seu componente permanece o mesmo.
   novo() { this.router.navigate(['/jogos/novo']); }
   editar(id: string) { this.router.navigate(['/jogos/editar', id]); }
 
